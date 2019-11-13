@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
-import telethon as tg, command, module, re, asyncio, util, sqlite3
+import telethon as tg, utils, sqlite3
+from pyrobud import module
 
 
 class DeleteLog(module.Module):
@@ -20,7 +20,7 @@ class DeleteLog(module.Module):
     async def on_message_deleted(self, msg: tg.events.MessageDeleted):
         if not self.enabled: return
         haschat = hasattr(msg.original_update, "channel_id")
-        chat = util.ChatStr(await self.bot.client.get_input_entity(msg.original_update.channel_id)) if haschat else "an Unknown chat"
+        chat = utils.ChatStr(await self.bot.client.get_input_entity(msg.original_update.channel_id)) if haschat else "an Unknown chat"
         msg_ids = '`, `'.join(str(x) for x in msg.deleted_ids)
         await self.bot.client.send_message("Deleted Messages", f"Someone deleted {len(msg.deleted_ids)} message(s) from {chat}\nMessages: `{msg_ids}`")
         """

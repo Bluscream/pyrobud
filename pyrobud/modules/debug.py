@@ -1,4 +1,4 @@
-import inspect, json, re, command,module, util, telethon as tg
+import inspect, json, re, utils, telethon as tg
 from datetime import datetime
 import inspect
 import json
@@ -13,10 +13,10 @@ class DebugModule(module.Module):
     async def cmd_time11(self, msg):
         reps = 1000000
 
-        before = util.time.usec()
+        before = utils.time.usec()
         for _ in range(reps):
             _ = 1 + 1
-        after = util.time.usec()
+        after = utils.time.usec()
 
         el_us = (after - before) / reps
         return "`1 + 1`: %.0f ns" % (el_us * 1000)
@@ -31,14 +31,14 @@ class DebugModule(module.Module):
             def send(text):
                 return self.bot.loop.create_task(msg.respond(text))
 
-            return eval(util.tg.filter_code_block(raw_args))
+            return eval(utils.tg.filter_code_block(raw_args))
 
-        before = util.time.usec()
-        result = await util.run_sync(_eval)
-        after = util.time.usec()
+        before = utils.time.usec()
+        result = await utils.run_sync(_eval)
+        after = utils.time.usec()
 
         el_us = after - before
-        el_str = util.time.format_duration_us(el_us)
+        el_str = utils.time.format_duration_us(el_us)
 
         return f"""```{str(result)}```
 
@@ -53,9 +53,9 @@ Time: {el_str}"""
             def send(text):
                 return self.bot.loop.create_task(msg.respond(text))
 
-            exec(util.tg.filter_code_block(raw_args))
+            exec(utils.tg.filter_code_block(raw_args))
 
-        await util.run_sync(_exec)
+        await utils.run_sync(_exec)
         return "Code evaulated."
 
     @command.desc("Get the code of a command")
@@ -65,7 +65,7 @@ Time: {el_str}"""
         if cmd_name not in self.bot.commands:
             return f"__Command__ `{cmd_name}` __doesn't exist.__"
 
-        src = await util.run_sync(lambda: inspect.getsource(self.bot.commands[cmd_name].func))
+        src = await utils.run_sync(lambda: inspect.getsource(self.bot.commands[cmd_name].func))
         filtered_src = re.sub(r"^    ", "", src, flags=re.MULTILINE)
         return f"```{filtered_src}```"
 
@@ -133,7 +133,7 @@ Time: {el_str}"""
             except ValueError as e:
                 return f"Error getting entity `{entity_str}`: {e}"
 
-            return f"""ID of `{entity_str}` ({util.tg.mention_user(entity)}) is: `{entity.id}`
+            return f"""ID of `{entity_str}` ({utils.tg.mention_user(entity)}) is: `{entity.id}`
 
 Additional entity info:
 ```{entity.stringify()}```"""
@@ -187,11 +187,11 @@ Additional entity info:
 
     @command.desc("Get user infos by ID")
     async def cmd_getuser(self, msg : tg.events.newmessage, input_user: str):
-        input_user = util.sanitize(input_user)
+        input_user = utils.sanitize(input_user)
         if input_user.isdigit(): input_user = int(input_user)
         try:
             user = await self.bot.client.get_entity(input_user)
-            await msg.respond(util.UserStr(user), reply_to=msg.reply_to_msg_id)
+            await msg.respond(utils.UserStr(user), reply_to=msg.reply_to_msg_id)
         except ValueError: await msg.respond(f"Could not find any user matching `{input_user}`!", reply_to=msg.reply_to_msg_id)
         await msg.delete()
 
@@ -200,9 +200,9 @@ Additional entity info:
         dialogs = await self.bot.client.get_dialogs()
         lines = [f"**{len(dialogs)} Chats:**\n"]
         await msg.respond(lines[0])
-        for dialog in dialogs: lines.append(util.ChatStr(dialog))
+        for dialog in dialogs: lines.append(utils.ChatStr(dialog))
         await msg.delete()
-        msgs = util.splitMsg("\n".join(lines))
+        msgs = utils.splitMsg("\n".join(lines))
         # await msg.respond(msgs[0])
         for message in msgs: await msg.respond(message)
 
@@ -214,7 +214,7 @@ Additional entity info:
         async for event in self.bot.client.iter_admin_log(input_chat if input_chat else msg.to_id):
             event = event.stringify().replace("\n", " ")
             log_items.append(f"```\n{event}\n```")
-        msgs = util.splitMsg("\n".join(log_items))
+        msgs = utils.splitMsg("\n".join(log_items))
         for message in msgs: await msg.respond(message)
 
     @command.desc("Get information about pyrobud")

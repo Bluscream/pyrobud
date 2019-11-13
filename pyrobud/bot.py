@@ -30,7 +30,7 @@ class Bot:
     user: (tg.types.User, tg.types.PeerUser)
     uid: int
 
-    def __init__(self, config, config_path):
+    def __init__(self, config, config_path = None):
     # def __init__(self, config):
         # Initialize module dicts
         self.commands = {}
@@ -239,7 +239,7 @@ class Bot:
 
         # Record start time and dispatch start event
         self.start_time = datetime.utcnow()
-        self.start_time_us = util.time_us()
+        self.start_time_us = util.time.usec()
         await self.dispatch_event("start", self.start_time_us)
 
         # Register handlers
@@ -263,7 +263,7 @@ class Bot:
             self.log.info("Finished catching up")
 
         # Save config to sync updated stats after catching up
-        await self.save_config()
+        # await self.save_config()
         self.log.info("Everything ready!")
 
     async def stop(self):

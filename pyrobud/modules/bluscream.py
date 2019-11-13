@@ -1,4 +1,5 @@
-import telethon as tg, command, module, re, asyncio
+import telethon as tg, asyncio
+from pyrobud import module
 from datetime import datetime, timedelta
 from random import choice
 

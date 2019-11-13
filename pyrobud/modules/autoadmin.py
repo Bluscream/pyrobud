@@ -1,4 +1,5 @@
-import module, util
+import utils
+from pyrobud import module
 import telethon as tg
 import re
 import asyncio

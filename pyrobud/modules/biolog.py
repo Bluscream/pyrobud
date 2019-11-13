@@ -1,4 +1,5 @@
-import module, util
+import utils
+from pyrobud import module
 import re
 import asyncio
 from datetime import timedelta, datetime, timezone
@@ -42,6 +43,6 @@ class BioLoggerModule(module.Module):
                 timestamp = event.date.strftime(format_timestamp)
                 if event.date <= last_timestamp: continue
                 user = await self.bot.client.get_entity(PeerUser(event.user_id))
-                msg = f"{timestamp} (UTC)\n{etype}\n{util.mention_user(user)} ({event.user_id})"
+                msg = f"{timestamp} (UTC)\n{etype}\n{utils.mention_user(user)} ({event.user_id})"
                 await self.bot.client.send_message(self.logchannel, msg, schedule=timedelta(seconds=10))
             await asyncio.sleep(self.sleep)

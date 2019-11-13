@@ -1,7 +1,8 @@
 import telethon as tg
 from telethon.tl.types import ChannelParticipantsAdmins, User
 
-import command, module, util
+import utils
+from pyrobud import module, command
 from datetime import timedelta
 
 
@@ -21,13 +22,13 @@ class LoggerModule(module.Module):
         txt = action.stringify(); notify = True
         if action.user_joined or action.user_left:
             _action = "⤵ Joined" if action.user_joined else "🔙 Left"
-            txt = f"{action.action_message.date}\n{_action} {util.ChatStr(action.chat)}"
+            txt = f"{action.action_message.date}\n{_action} {utils.ChatStr(action.chat)}"
             if action.user_joined:
                 admins = await self.bot.client.get_participants(action.chat, filter=ChannelParticipantsAdmins)
                 _admins = len(admins)
                 if _admins > 0:
                     txt += f"\n\n**Admins ({_admins}):**"
-                    for admin in admins: txt += f"\n{util.UserStr(admin, True)}"
+                    for admin in admins: txt += f"\n{utils.UserStr(admin, True)}"
                 notify = False
         await self.bot.client.send_message(self.bot.user, txt.strip(), schedule=timedelta(seconds=10) if notify else None)
 
