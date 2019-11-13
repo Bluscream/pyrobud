@@ -8,7 +8,7 @@ from pyrobud import module
 class DynamicPosts(module.Module):
     name = "Dynamic Posts"
     sleep = timedelta(minutes=15).total_seconds()
-    enabled = True
+    enabled = False
 
     posts = {
         19: "Timezone: `{timezone}`\nLocal time: `{time}`",
