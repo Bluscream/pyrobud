@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 
 import telethon as tg
+
 import utils
 from pyrobud import command, module
 
@@ -185,15 +186,15 @@ Additional entity info:
 
         return "\n".join(lines)
 
-
     @command.desc("Get user infos by ID")
-    async def cmd_getuser(self, msg : tg.events.newmessage, input_user: str):
+    async def cmd_getuser(self, msg: tg.events.newmessage, input_user: str):
         input_user = utils.sanitize(input_user)
         if input_user.isdigit(): input_user = int(input_user)
         try:
             user = await self.bot.client.get_entity(input_user)
             await msg.respond(utils.UserStr(user), reply_to=msg.reply_to_msg_id)
-        except ValueError: await msg.respond(f"Could not find any user matching `{input_user}`!", reply_to=msg.reply_to_msg_id)
+        except ValueError:
+            await msg.respond(f"Could not find any user matching `{input_user}`!", reply_to=msg.reply_to_msg_id)
         await msg.delete()
 
     @command.desc("List all chats with IDs")

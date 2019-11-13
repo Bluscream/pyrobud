@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import asyncio
-import colorlog
 import logging
+
+import colorlog
 import toml
 import uvloop
 
@@ -53,11 +54,13 @@ def main():
     if bot_tries > 3:
         loop.run_until_complete(bot.start(catch_up=False))
         bot_tries = 0
-    else: loop.run_until_complete(bot.start())
+    else:
+        loop.run_until_complete(bot.start())
     bot.client.run_until_disconnected()
 
     log.info("Stopping bot")
     loop.run_until_complete(bot.stop())
+
 
 bot_tries = 0
 if __name__ == "__main__":

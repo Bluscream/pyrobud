@@ -5,7 +5,6 @@ __all__ = list(module for _, module, _ in pkgutil.iter_modules([os.path.dirname(
 
 from . import *
 
-
 log = logging.getLogger("metamod")
 
 try:

@@ -23,8 +23,8 @@ class Bot:
     user: (tg.types.User, tg.types.PeerUser)
     uid: int
 
-    def __init__(self, config, config_path = None):
-    # def __init__(self, config):
+    def __init__(self, config, config_path=None):
+        # def __init__(self, config):
         # Initialize module dicts
         self.commands = {}
         self.modules = {}

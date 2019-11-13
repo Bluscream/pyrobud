@@ -1,10 +1,11 @@
 import telethon as tg
 
 
-def PrintChat(chat : tg.types.Chat):
+def PrintChat(chat: tg.types.Chat):
     return f"\"{chat.title}\" ({chat.id})"
 
-def PrintUser(user : tg.types.User):
+
+def PrintUser(user: tg.types.User):
     result = ""
     if (user.first_name or user.last_name):
         result += "\""
@@ -15,6 +16,7 @@ def PrintUser(user : tg.types.User):
     if (user.username): result += f"@{user.username} "
     if (user.id): result += f"(`{user.id})`"
     return result
+
 
 tg.types.Chat.__str__ = PrintChat
 tg.types.User.__str__ = PrintUser

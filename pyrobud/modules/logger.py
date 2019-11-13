@@ -20,7 +20,8 @@ class LoggerModule(module.Module):
     async def on_chat_action(self, action: tg.events.chataction.ChatAction.Event):
         if not self.enabled: return
         if action.user_id is not None and action.user_id != self.bot.uid: return
-        txt = action.stringify(); notify = True
+        txt = action.stringify();
+        notify = True
         if action.user_joined or action.user_left:
             _action = "⤵ Joined" if action.user_joined else "🔙 Left"
             txt = f"{action.action_message.date}\n{_action} {utils.ChatStr(action.chat)}"
@@ -31,7 +32,8 @@ class LoggerModule(module.Module):
                     txt += f"\n\n**Admins ({_admins}):**"
                     for admin in admins: txt += f"\n{utils.UserStr(admin, True)}"
                 notify = False
-        await self.bot.client.send_message(self.bot.user, txt.strip(), schedule=timedelta(seconds=10) if notify else None)
+        await self.bot.client.send_message(self.bot.user, txt.strip(),
+                                           schedule=timedelta(seconds=10) if notify else None)
 
     @command.desc("Toggle selflog")
     async def cmd_selflog(self, msg):

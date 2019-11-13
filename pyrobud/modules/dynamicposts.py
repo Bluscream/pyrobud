@@ -17,6 +17,7 @@ class DynamicPosts(module.Module):
         22: "{stats}"
     }
     channel = -1001441900591
+
     async def on_ready(self):
         self.bot.loop.create_task(self.updatePosts())
 
@@ -31,10 +32,10 @@ class DynamicPosts(module.Module):
                         botinfo=await self.bot.modules["Debug"].cmd_botinfo(None, False),
                         sysinfo=await self.bot.modules["System"].cmd_sysinfo(None),
                         stats=await self.bot.modules["Stats"].cmd_stats(None, None)
-                     ))
+                    ))
                     await asyncio.sleep(5)
-                except: print("error while processing msg #", msgid)
-
+                except:
+                    print("error while processing msg #", msgid)
 
     async def cmd_dynamicposts(self, msg):
         self.enabled = not self.enabled

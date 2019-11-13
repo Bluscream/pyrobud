@@ -4,6 +4,7 @@ import logging
 # _parentdir = os.path.dirname(_currentdir)
 # sys.path.insert(0,_parentdir)
 import typing
+
 if typing.TYPE_CHECKING:
     from bot import Bot
 

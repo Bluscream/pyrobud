@@ -1,13 +1,13 @@
 import os
-import psutil
 import subprocess
 import sys
-import telethon as tg
-import utils
 from datetime import datetime
 
+import psutil
 import speedtest
+import telethon as tg
 
+import utils
 from pyrobud import command, module
 
 
@@ -27,7 +27,8 @@ class SystemModule(module.Module):
             sudo_password = self.bot.config["shell"]["sudo_pw"]
             sudo_password = subprocess.Popen(['echo', sudo_password], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return subprocess.run(
-                ['sudo', '-S'] + command, stdin=sudo_password.stdout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs
+                ['sudo', '-S'] + command, stdin=sudo_password.stdout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                universal_newlines=True, **kwargs
             )
 
         return await utils.run_sync(_run_process)
@@ -43,12 +44,12 @@ class SystemModule(module.Module):
         try:
             p = psutil.Process(os.getpid())
             for handler in p.open_files() + p.connections(): os.close(handler.fd)
-        except Exception as ex: return ex
+        except Exception as ex:
+            return ex
         python = sys.executable
         return os.execl(python, python, *sys.argv)
         # cmd1 = subprocess.Popen(['echo', self.bot.config["shell"]["sudo_pw"]], stdout=subprocess.PIPE)
         # subprocess.Popen(['sudo', '-S', "service", "selfbot-tguser", "restart"], stdin=cmd1.stdout)
-
 
     @command.desc("Run a snippet in a shell")
     @command.alias("sh")
@@ -91,11 +92,13 @@ class SystemModule(module.Module):
             proc = await self.run_process(["iostat", "-c", "2", "1"], timeout=10)
             used_cpu = round(float(proc.stdout.strip().split()[-1]))
             sysinfo += f"\nCPU Usage: {100 - used_cpu}%"
-        except Exception as ex: print(ex)
+        except Exception as ex:
+            print(ex)
         try:
             proc = await self.run_process(["vcgencmd", "measure_temp"], timeout=10)
             sysinfo += "\nTemp: " + proc.stdout.strip().replace("temp=", "")
-        except Exception as ex: print(ex)
+        except Exception as ex:
+            print(ex)
 
         return f"```{sysinfo}```{err}"
 
@@ -161,7 +164,7 @@ class SystemModule(module.Module):
         before = utils.time_us()
         timeout = 60
         try:
-            proc = await self.run_process_sudo(["/bin/sh","/home/blu/sdtest.sh"], timeout=timeout)
+            proc = await self.run_process_sudo(["/bin/sh", "/home/blu/sdtest.sh"], timeout=timeout)
         except subprocess.TimeoutExpired:
             return f"🕑 `sdtest` failed to finish within {timeout / 60} minutes."
         after = utils.time_us()

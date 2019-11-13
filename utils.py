@@ -8,15 +8,17 @@ import telethon as tg
 from telethon.tl.types import InputPeerChannel
 
 
-def splitMsg(msg, chars = 4096):
-    return [msg[i:i+chars] for i in range(0, len(msg), chars)]
+def splitMsg(msg, chars=4096):
+    return [msg[i:i + chars] for i in range(0, len(msg), chars)]
 
-def ChatStr(chat : tg.types.Chat):
+
+def ChatStr(chat: tg.types.Chat):
     if isinstance(chat, InputPeerChannel): return f"{chat.channel_id}"
     if hasattr(chat, "title"): return f"\"{chat.title}\" ({chat.id})"
     return f"{chat.id}"
 
-def UserStr(user : tg.types.User, full: bool = False):
+
+def UserStr(user: tg.types.User, full: bool = False):
     fullname = user.first_name
     if user.last_name: fullname += f" {user.last_name}"
     result = f"[`{fullname}`](tg://user?id={user.id})"
@@ -25,8 +27,10 @@ def UserStr(user : tg.types.User, full: bool = False):
         if user.id: result += f" (`{user.id})`"
     return result
 
+
 def sanitize(input):
     return input.replace("`", "")
+
 
 def add_lrm(str_to_modify):
     '''Add a Left to Right Mark (LRM) at provided string start'''
@@ -37,16 +41,21 @@ def add_lrm(str_to_modify):
     str_to_modify = barray.decode("utf-8")
     return str_to_modify
 
-def base64encode(input : str):
+
+def base64encode(input: str):
     return b64encode(bytes(str(input), "utf-8")).decode("utf-8", "ignore")
-def base64decode(input : str):
+
+
+def base64decode(input: str):
     return b64decode(input).decode("utf-8", "ignore")
+
 
 def mention_user(user):
     if user.username:
         return f"@{user.username}"
     else:
         return f"[{tg.utils.get_display_name(user)}](tg://user?id={user.id})"
+
 
 def time_us():
     return int(time.time() * 1000000)
@@ -90,7 +99,7 @@ def find_prefixed_funcs(obj, prefix):
 
     for sym in dir(obj):
         if sym.startswith(prefix):
-            name = sym[len(prefix) :]
+            name = sym[len(prefix):]
             func = getattr(obj, sym)
             if not callable(func):
                 continue

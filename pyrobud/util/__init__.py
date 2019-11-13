@@ -11,7 +11,7 @@ def find_prefixed_funcs(obj, prefix):
 
     for sym in dir(obj):
         if sym.startswith(prefix):
-            name = sym[len(prefix) :]
+            name = sym[len(prefix):]
             func = getattr(obj, sym)
             if not callable(func):
                 continue
