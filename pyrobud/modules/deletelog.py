@@ -1,4 +1,7 @@
-import telethon as tg, utils, sqlite3
+import sqlite3
+import telethon as tg
+import utils
+
 from pyrobud import module
 
 

@@ -2,11 +2,11 @@ import asyncio
 import os
 import time
 import traceback
-from datetime import datetime
 from base64 import b64encode, b64decode
-from telethon.tl.types import PeerUser, PeerChat, PeerChannel, InputPeerChannel
 
 import telethon as tg
+from telethon.tl.types import InputPeerChannel
+
 
 def splitMsg(msg, chars = 4096):
     return [msg[i:i+chars] for i in range(0, len(msg), chars)]

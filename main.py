@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
-import asyncio, logging, colorlog, toml, uvloop
+import asyncio
+import colorlog
+import logging
+import toml
+import uvloop
 
 from pyrobud import util
 from pyrobud.bot import Bot

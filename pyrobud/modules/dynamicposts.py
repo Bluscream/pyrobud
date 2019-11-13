@@ -1,6 +1,9 @@
-import asyncio, time
+import asyncio
+import time
 from datetime import datetime, timedelta
+
 from pyrobud import module
+
 
 class DynamicPosts(module.Module):
     name = "Dynamic Posts"

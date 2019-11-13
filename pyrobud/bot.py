@@ -3,20 +3,13 @@ import importlib
 import inspect
 import logging
 import os
-import sys
-import traceback
+from datetime import datetime, timedelta
 
 import aiohttp
-import telethon as tg
-from telethon.tl.types import PeerUser, PeerChat, PeerChannel
-import toml
 import plyvel
+import telethon as tg
 
 from . import command, module, modules, util
-
-from datetime import datetime, timedelta, timezone
-
-from pprint import pprint
 
 
 class Listener:

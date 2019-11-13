@@ -1,9 +1,10 @@
+from datetime import timedelta
+
 import telethon as tg
-from telethon.tl.types import ChannelParticipantsAdmins, User
+from telethon.tl.types import ChannelParticipantsAdmins
 
 import utils
 from pyrobud import module, command
-from datetime import timedelta
 
 
 class LoggerModule(module.Module):

@@ -1,8 +1,6 @@
 import asyncio
-import os
 import urllib.parse
 
-import aiohttp
 import telethon as tg
 
 from pyrobud import command, module, util

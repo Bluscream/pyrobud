@@ -2,8 +2,8 @@ import asyncio
 import string
 from datetime import timezone
 
-import telethon as tg
 import nostril
+import telethon as tg
 
 from pyrobud import command, module, util
 

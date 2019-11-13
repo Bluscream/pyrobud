@@ -1,5 +1,5 @@
 import telethon as tg
-from utils import add_lrm
+
 
 def PrintChat(chat : tg.types.Chat):
     return f"\"{chat.title}\" ({chat.id})"

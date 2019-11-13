@@ -1,10 +1,9 @@
-import utils
-from pyrobud import module
-import telethon as tg
-import re
 import asyncio
-from datetime import timedelta, datetime, timezone
-from telethon.tl.types import PeerUser, PeerChannel
+
+import telethon as tg
+from telethon.tl.types import PeerUser
+
+from pyrobud import module
 
 
 class AutoAdminModule(module.Module):

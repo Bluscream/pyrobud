@@ -1,8 +1,15 @@
-import subprocess, utils, os, psutil, sys, telethon as tg
+import os
+import psutil
+import subprocess
+import sys
+import telethon as tg
+import utils
 from datetime import datetime
+
 import speedtest
 
-from pyrobud import command, module, util
+from pyrobud import command, module
+
 
 class SystemModule(module.Module):
     name = "System"

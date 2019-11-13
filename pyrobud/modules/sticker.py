@@ -2,7 +2,6 @@ import asyncio
 import io
 import os
 import subprocess
-import time
 from datetime import datetime
 
 from PIL import Image
