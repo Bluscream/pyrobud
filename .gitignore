@@ -116,3 +116,5 @@ stickers/
 messages.*db
 # LevelDB databases
 *.db/
+# Data directory
+data/

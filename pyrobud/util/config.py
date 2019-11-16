@@ -122,3 +122,27 @@ def upgrade_v3(config, path):
 
     config["version"] = 3
     save(config, path)
+
+
+def upgrade_v4(config, path):
+    bot_config = config["bot"]
+
+    if "report_errors" not in bot_config:
+        log.info("Enabling error reporting by default without usernames")
+        log.info("Please consider enabling report_username if you're comfortable with it!")
+        bot_config["report_errors"] = True
+        bot_config["report_username"] = False
+
+    config["version"] = 4
+    save(config, path)
+
+
+def upgrade_v5(config, path):
+    bot_config = config["bot"]
+
+    if "sentry_dsn" not in bot_config:
+        log.info("Adding default Sentry DSN to bot config section")
+        bot_config["sentry_dsn"] = ""
+
+    config["version"] = 5
+    save(config, path)

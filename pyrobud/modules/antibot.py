@@ -1,11 +1,11 @@
 import asyncio
 import string
-from datetime import timezone
+from datetime import timezone, timedelta
 
 import nostril
 import telethon as tg
 
-from pyrobud import command, module, util
+from .. import command, module, util
 
 
 class AntibotModule(module.Module):
@@ -75,6 +75,9 @@ class AntibotModule(module.Module):
         # Consolidate message content checks
         return self.msg_has_suspicious_entity(msg) or self.msg_has_suspicious_keyword(msg)
 
+    def msg_type_suspicious(self, msg):
+        return msg.contact or msg.geo or msg.game
+
     def msg_data_is_suspicious(self, msg):
         incoming = not msg.out
         has_date = msg.date
@@ -84,7 +87,12 @@ class AntibotModule(module.Module):
         # Check for a date to exonerate empty messages
         if incoming and has_date:
             # Lazily evalulate suspicious content as it is more expensive
-            return (forwarded and msg.photo) or self.msg_content_suspicious(msg)
+            if forwarded:
+                # Screen forwarded messages more aggressively
+                return msg.photo or self.msg_type_suspicious(msg) or self.msg_content_suspicious(msg)
+            else:
+                # Skip suspicious entity/photo check for non-forwarded messages
+                return self.msg_type_suspicious(msg) or self.msg_has_suspicious_keyword(msg)
 
         return False
 
@@ -93,9 +101,16 @@ class AntibotModule(module.Module):
         if not self.msg_data_is_suspicious(msg):
             return False
 
-        # Load group-specific user information
+        # Load message metadata entities
         chat = await msg.get_chat()
         sender = await msg.get_sender()
+
+        # Messages forwarded from a linked channel by Telegram don't have a sender
+        # We can assume these messages are safe since only admins can link channels
+        if sender is None:
+            return False
+
+        # Load group-specific user information
         ch_participant = await self.bot.client(tg.tl.functions.channels.GetParticipantRequest(chat, sender))
         participant = ch_participant.participant
 
@@ -198,7 +213,7 @@ class AntibotModule(module.Module):
 
         # Log the event
         self.log.info(f'Kicked spambot with ID {user.id} in group "{chat.title}"')
-        await event.reply(f"❯❯ **Kicked auto-detected spambot** with ID `{user.id}`")
+        await event.reply(f"❯❯ **Kicked auto-detected spambot** with ID `{user.id}`", schedule=timedelta(seconds=10))
         self.bot.dispatch_event_nowait("stat_event", "spambots_banned")
 
         # Delete the spam message just in case
@@ -256,9 +271,27 @@ class AntibotModule(module.Module):
         if not msg.is_group:
             return "__Antibot can only be used in groups.__"
 
+        if not msg.is_channel:
+            return "__Please convert this group to a supergroup in order to enable antibot.__"
+
         state = not await self.group_db.get(f"{msg.chat_id}.enabled", False)
 
         if state:
+            # Check for required permissions
+            chat = await msg.get_chat()
+            ch_participant = await self.bot.client(tg.tl.functions.channels.GetParticipantRequest(chat, "me"))
+            ptcp = ch_participant.participant
+
+            if isinstance(ptcp, tg.types.ChannelParticipantCreator):
+                # Group creator always has all permissions
+                pass
+            elif isinstance(ptcp, tg.types.ChannelParticipantAdmin):
+                # Check for the required admin permissions
+                if not ptcp.admin_rights.delete_messages or not ptcp.admin_rights.ban_users:
+                    return "__Antibot requires the **Delete Messages** and **Ban users** permissions.__"
+            else:
+                return "__I must be an admin with the **Delete Messages** and **Ban users** permissions for antibot to work.__"
+
             await self.group_db.put(f"{msg.chat_id}.enabled", True)
             await self.group_db.put(f"{msg.chat_id}.enable_time", util.time.sec())
         else:

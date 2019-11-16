@@ -1,11 +1,13 @@
 import inspect
+import json
+import logging
 import re
 from datetime import datetime
 
 import telethon as tg
 
 import utils
-from pyrobud import command, module
+from .. import command, module, util
 
 
 class DebugModule(module.Module):
@@ -25,6 +27,7 @@ class DebugModule(module.Module):
 
     @command.desc("Evaluate code")
     @command.alias("ev")
+    @command.error_level(logging.WARNING)
     async def cmd_eval(self, msg, raw_args):
         def _eval():
             nonlocal msg, raw_args, self
@@ -46,7 +49,8 @@ class DebugModule(module.Module):
 
 Time: {el_str}"""
 
-    @command.desc("Evalulate code (statement)")
+    @command.desc("Evaluate code (statement)")
+    @command.error_level(logging.WARNING)
     async def cmd_exec(self, msg, raw_args):
         def _exec():
             nonlocal msg, raw_args, self
@@ -120,10 +124,12 @@ Time: {el_str}"""
 
             return "__No compatible media found.__"
 
-    @command.desc("Get all contextually relevant IDs, or the ID of the given entity")
-    @command.alias("user", "entity", "info", "einfo")
-    async def cmd_id(self, msg, entity_str):
-        if entity_str:
+    @command.desc("Get all available information about the given entity (or `chat`)")
+    @command.alias("einfo")
+    async def cmd_entity(self, msg, entity_str):
+        if entity_str == "chat":
+            entity = await msg.get_chat()
+        elif entity_str:
             if entity_str.isdigit():
                 try:
                     entity_str = int(entity_str)
@@ -134,12 +140,15 @@ Time: {el_str}"""
                 entity = await self.bot.client.get_entity(entity_str)
             except ValueError as e:
                 return f"Error getting entity `{entity_str}`: {e}"
+        elif msg.is_reply:
+            entity = await msg.get_reply_message()
+        else:
+            return "__No entity given via argument or reply.__"
+        return f"```{entity.stringify()}```"
 
-            return f"""ID of `{entity_str}` ({utils.tg.mention_user(entity)}) is: `{entity.id}`
-
-Additional entity info:
-```{entity.stringify()}```"""
-
+    @command.desc("Get all contextually relevant IDs")
+    @command.alias("user", "info")
+    async def cmd_id(self, msg):
         lines = []
 
         if msg.chat_id:
