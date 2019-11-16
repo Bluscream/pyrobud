@@ -53,11 +53,11 @@ Time: `{time}`
             await asyncio.sleep(5)
             await msg.delete()
             return
-        self.last_used = now
         # txt = txt.replace(command, "", 0)
-        text = text[len(self.bot.prefix + self.command):].strip()
+        text = text[len(self.bot.prefix + self.command):].replace("`", "").strip()
         if len(text) < self.min_chars: await msg.reply(f"Statement has to be at least {self.min_chars} chars long!"); return
         if len(text) > self.max_chars: await msg.reply(f"Statement can't be longer than {self.max_chars}!"); return
+        self.last_used = now
         if len(text) < self.max_chars_scramble_case: text = self.scrambleCase(text)
         text = self.scrambleText(text)
 
@@ -68,7 +68,7 @@ Time: `{time}`
             def send(text):
                 return self.bot.loop.create_task(msg.respond(text))
 
-            return eval(msg.raw_text)
+            return eval(text)
 
         before = util.time.usec()
         try:  result = await util.run_sync(_eval)
@@ -78,7 +78,7 @@ Time: `{time}`
         el_us = after - before
         el_str = util.time.format_duration_us(el_us)
 
-        await msg.reply(self.template.format(command=text.replace("`", ""), result=result.replace("`", ""), time=el_str))
+        await msg.reply(self.template.format(command=str(text).replace("`", ""), result=str(result).replace("`", ""), time=el_str))
 
     async def cmd_supereval(self, msg: tg.custom.Message, args: str):
         if args:
