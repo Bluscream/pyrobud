@@ -2,14 +2,11 @@ import os
 import subprocess
 import sys
 from datetime import datetime
-
 import psutil
 import speedtest
 import telethon as tg
-
-import utils
 from .. import command, module, util
-
+from pprint import pprint
 
 class SystemModule(module.Module):
     name = "System"
@@ -20,18 +17,21 @@ class SystemModule(module.Module):
                 command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs
             )
 
-        return await utils.run_sync(_run_process)
+        return await util.run_sync(_run_process)
 
     async def run_process_sudo(self, command, **kwargs):
+        command = ['sudo', '-S'] + command
+        pprint(command)
+        print(" ".join(command))
         def _run_process():
             sudo_password = self.bot.config["shell"]["sudo_pw"]
             sudo_password = subprocess.Popen(['echo', sudo_password], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return subprocess.run(
-                ['sudo', '-S'] + command, stdin=sudo_password.stdout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                command, stdin=sudo_password.stdout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 universal_newlines=True, **kwargs
             )
 
-        return await utils.run_sync(_run_process)
+        return await util.run_sync(_run_process)
 
     @command.desc("Restart pyrobud")
     async def cmd_restart(self, msg: tg.events.newmessage, confirm: bool = False):
@@ -58,17 +58,17 @@ class SystemModule(module.Module):
             return "__Provide a snippet to run in shell.__"
 
         await msg.result("Running snippet...")
-        before = utils.time.usec()
+        before = util.time.usec()
 
         try:
             proc = await self.run_process(parsed_snip, shell=True, timeout=120)
         except subprocess.TimeoutExpired:
             return "🕑 Snippet failed to finish within 2 minutes."
 
-        after = utils.time.usec()
+        after = util.time.usec()
 
         el_us = after - before
-        el_str = f"\nTime: {utils.time.format_duration_us(el_us)}"
+        el_str = f"\nTime: {util.time.format_duration_us(el_us)}"
 
         cmd_out = proc.stdout.strip()
         if not cmd_out:
@@ -126,60 +126,50 @@ class SystemModule(module.Module):
     @command.desc("Test Internet speed")
     @command.alias("stest", "st")
     async def cmd_speedtest(self, msg):
-        before = utils.time.usec()
+        before = util.time.usec()
 
-        before = utils.time_us()
-        timeout = 500
-        try:
-            proc = await self.run_process("speedtest", timeout=timeout)
-        except subprocess.TimeoutExpired:
-            return f"🕑 `speedtest` failed to finish within {timeout / 60} minutes."
-        except FileNotFoundError:
-            return "❌ The `speedtest` [program](https://github.com/sivel/speedtest-cli) (package name: `speedtest-cli`) must be installed on the host system."
-        after = utils.time_us()
-        st = await utils.run_sync(speedtest.Speedtest)
+        st = await util.run_sync(speedtest.Speedtest)
         status = "Selecting server..."
 
         await msg.result(status)
-        server = await utils.run_sync(st.get_best_server)
+        server = await util.run_sync(st.get_best_server)
         status += f" {server['sponsor']} ({server['name']})\n"
         status += "Ping: %.2f ms\n" % server["latency"]
 
         status += "Performing download test..."
         await msg.result(status)
-        dl_bits = await utils.run_sync(st.download)
+        dl_bits = await util.run_sync(st.download)
         dl_mbit = dl_bits / 1000 / 1000
         status += " %.2f Mbps\n" % dl_mbit
 
         status += "Performing upload test..."
         await msg.result(status)
-        ul_bits = await utils.run_sync(st.upload)
+        ul_bits = await util.run_sync(st.upload)
         ul_mbit = ul_bits / 1000 / 1000
         status += " %.2f Mbps\n" % ul_mbit
 
-        delta = utils.time.usec() - before
-        status += f"\nTime elapsed: {utils.time.format_duration_us(delta)}"
+        delta = util.time.usec() - before
+        status += f"\nTime elapsed: {util.time.format_duration_us(delta)}"
 
-        return f"```{out}```{err}{el_str}"
+        return status
 
     @command.desc("Test Disk speed")
     @command.alias("dstest", "dst")
     async def cmd_diskspeedtest(self, msg):
         await msg.result("Testing Disk speed; this may take a while...")
 
-        before = utils.time_us()
+        before = util.time.usec()
         timeout = 60
+        output = "Testing read speed:\n"
         try:
-            proc = await self.run_process_sudo(["/bin/sh", "/home/blu/sdtest.sh"], timeout=timeout)
+            proc = await self.run_process_sudo(["", "hdparm -Tt /dev/mmcblk0"], timeout=timeout / 2)
+            output += proc.stdout.strip() + "\nTesting write speed:\n"
+            proc = await self.run_process_sudo(["", "dd if=/dev/zero of=/tmp/output bs=8k count=10k; rm -f /tmp/output"], timeout=timeout / 2)
+            output += proc.stdout.strip()
         except subprocess.TimeoutExpired:
             return f"🕑 `sdtest` failed to finish within {timeout / 60} minutes."
-        after = utils.time_us()
-
+        after = util.time.usec()
         el_us = after - before
-        el_str = f"\nTime: {utils.format_duration_us(el_us)}"
-
+        el_str = f"\nTime: {util.time.format_duration_us(el_us)}"
         err = f"⚠️ Return code: {proc.returncode}" if proc.returncode != 0 else ""
-
-        out = proc.stdout.strip()
-
-        return f"```{out}```{err}{el_str}"
+        return f"```{output}```{err}{el_str}"

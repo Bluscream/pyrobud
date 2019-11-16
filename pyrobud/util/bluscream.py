@@ -7,7 +7,6 @@ from base64 import b64encode, b64decode
 import telethon as tg
 from telethon.tl.types import InputPeerChannel
 
-
 def splitMsg(msg, chars=4096):
     return [msg[i:i + chars] for i in range(0, len(msg), chars)]
 
