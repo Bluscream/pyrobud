@@ -39,6 +39,11 @@ Time: `{time}`
             chars[idx] = ch
         return "".join(chars)
 
+    async def replyAndDelete(self, msg, text, delete_after_s=5):
+            msg = await msg.reply(text)
+            await asyncio.sleep(delete_after_s)
+            await msg.delete()
+
     async def on_message(self, msg: tg.custom.Message):
         if msg.to_id is None or msg.to_id not in self.enabled_for: return
         if not msg.raw_text.startswith(self.bot.prefix): return
@@ -49,14 +54,11 @@ Time: `{time}`
         now = datetime.now()
         since_last = now - self.last_used
         if since_last < self.min_time:
-            msg = await msg.reply(f"You'll have to wait {self.min_time - since_last} to use this command again")
-            await asyncio.sleep(5)
-            await msg.delete()
-            return
+            await self.replyAndDelete(msg, f"You'll have to wait {self.min_time - since_last} to use this command again"); return
         # txt = txt.replace(command, "", 0)
         text = text[len(self.bot.prefix + self.command):].replace("`", "").strip()
-        if len(text) < self.min_chars: await msg.reply(f"Statement has to be at least {self.min_chars} chars long!"); return
-        if len(text) > self.max_chars: await msg.reply(f"Statement can't be longer than {self.max_chars}!"); return
+        if len(text) < self.min_chars: await self.replyAndDelete(msg, f"Statement has to be at least {self.min_chars} chars long!"); return
+        if len(text) > self.max_chars: await self.replyAndDelete(msg, f"Statement can't be longer than {self.max_chars}!"); return
         self.last_used = now
         if len(text) < self.max_chars_scramble_case: text = self.scrambleCase(text)
         text = self.scrambleText(text)
@@ -67,7 +69,6 @@ Time: `{time}`
             # pylint: disable=unused-variable
             def send(text):
                 return self.bot.loop.create_task(msg.respond(text))
-
             return eval(text)
 
         before = util.time.usec()
