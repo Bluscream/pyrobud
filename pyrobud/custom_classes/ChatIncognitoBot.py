@@ -4,8 +4,9 @@ from datetime import datetime, timedelta
 from typing import List, ClassVar
 import telethon as tg
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING: from pyrobud.custom_modules.ChatIncognitoBot import ChatIncognitoBot
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+# from ..custom_modules.ChatIncognitoBot import ChatIncognitoBot
 
 prefix = "/"
 
@@ -71,7 +72,7 @@ class Session(object):
         self.state = SessionState.Ended
 
     @classmethod
-    def stop(self, module: ChatIncognitoBot):
+    def stop(self, module): # : ChatIncognitoBot.ChatIncognitoBot):
         module.sendAndDelete(Commands.leave_chat)
         self.close()
 

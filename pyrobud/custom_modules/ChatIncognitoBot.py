@@ -7,8 +7,11 @@ from typing import List
 from urllib.parse import urlparse
 from pprint import pformat
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING: from pyrobud.custom_classes.ChatIncognitoBot import *
+from ..custom_classes.ChatIncognitoBot import *
+
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING: from pyrobud.custom_modules.ChatIncognitoBotClasses import *
+# else:
 
 
 class ChatIncognitoBot(module.Module):
@@ -26,7 +29,7 @@ class ChatIncognitoBot(module.Module):
 
     @property
     def sessionActive(self) -> bool:
-        return self.sessions[-1].endtime is not None
+        return self.sessions and self.sessions[-1].endtime is not None
 
     @property
     def activeSession(self) -> Session:
@@ -68,7 +71,8 @@ class ChatIncognitoBot(module.Module):
     async def on_message(self, msg: tg.custom.Message):
         if msg.chat_id != self.bot_uid: return
         if msg.from_id == self.bot.uid:
-            if msg.text.lower() == "/session": await msg.edit(pformat(self.sessions[-1]))
+            if msg.text.lower() == "/session":
+                if self.sessions: await msg.edit(pformat(self.sessions[-1]))
         elif msg.from_id == self.bot_uid:
             if msg.media is not None and not msg.text.startswith("⚠️"): # Media
                 _now = datetime.now()
@@ -80,10 +84,7 @@ class ChatIncognitoBot(module.Module):
                 if not self.sessionActive: self.newSession()
                 if not self.activeSession.greeted: await self.greet(msg)
             else: # Bot Message
-                if msg.text.contains(Emojis.Session.start):
-                    self.newSession(msg)
-                    if not self.activeSession.greeted and choice(True, False): await self.greet(msg)
-                if msg.text.contains(Emojis.Session.end):
+                if Emojis.Session.end in msg.text:
                     for entity in msg.entities:
                         if hasattr(entity, "url"): self.activeSession.reopen_url = urlparse(entity.url)
                     if self.sessionActive: self.activeSession.close()
@@ -91,7 +92,10 @@ class ChatIncognitoBot(module.Module):
                     await self.bot.client.send_message(self.log_channel, pformat(self.sessions[-1]))
                     await asyncio.sleep(10)
                     await self.replyAndDelete(msg, Commands.new_chat)
-                if msg.text.contains(Emojis.Session.searching):
+                if Emojis.Session.start in msg.text:
+                    self.newSession(msg)
+                    if not self.activeSession.greeted and choice(True, False): await self.greet(msg)
+                if Emojis.Session.searching in msg.text:
                     if self.sessionActive: self.activeSession.close()
                     self.session_state = SessionState.Searching
 
