@@ -20,7 +20,7 @@ def ChatStr(chat: tg.types.Chat):
 def UserStr(user: tg.types.User, full: bool = False):
     fullname = user.first_name
     if user.last_name: fullname += f" {user.last_name}"
-    result = f"[`{fullname}`](tg://user?id={user.id})"
+    result = f"\"[{fullname}](tg://user?id={user.id})\""
     if full:
         if user.username: result += f" @{user.username}"
         if user.id: result += f" (`{user.id})`"

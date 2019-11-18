@@ -6,7 +6,7 @@ import logging
 import typing
 
 if typing.TYPE_CHECKING:
-    from bot import Bot
+    from pyrobud.bot import Bot
 
 
 class ModuleLoadError(Exception):

@@ -23,6 +23,7 @@ class Listener:
 class Bot:
     user: (tg.types.User, tg.types.PeerUser)
     uid: int
+    client: tg.TelegramClient
 
     def __init__(self, config, config_path=None):
         # def __init__(self, config):

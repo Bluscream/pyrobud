@@ -3,7 +3,6 @@ import telethon as tg
 from telethon.tl.types import ChannelParticipantsAdmins
 from .. import command, module, util
 
-
 class LoggerModule(module.Module):
     name = "Logger"
     enabled = True
@@ -17,7 +16,7 @@ class LoggerModule(module.Module):
     async def on_chat_action(self, action: tg.events.chataction.ChatAction.Event):
         if not self.enabled: return
         if action.user_id is not None and action.user_id != self.bot.uid: return
-        txt = action.stringify();
+        txt = action.stringify()
         notify = True
         if action.user_joined or action.user_left:
             _action = "⤵ Joined" if action.user_joined else "🔙 Left"
