@@ -20,3 +20,9 @@
                     chatcount += 1
                     break
         return f"{len(users_to_ban)} users have been banned from {chatcount} chats!"
+		
+	@command.desc("Purge specified amount or all messages in the current chat")
+    @command.alias("prunemessages", "purgemsgs", "prunemsgs")
+    async def cmd_purgemessages(self, msg: tg.events.newmessage):  # , amount: int = None
+        await self.bot.client.delete_messages(msg.chat_id, [x for x in range(msg.id)])
+        await msg.result(f"Purged last {msg.id} messages!")
