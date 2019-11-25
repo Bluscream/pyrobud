@@ -36,93 +36,45 @@ class ModerationModule(module.Module):
     async def cmd_admin(self, msg, comment):
         await self.cmd_everyone(msg, comment, tag="admin", filter=tg.tl.types.ChannelParticipantsAdmins)
 
-    @command.desc("Ban users from all chats where you have permissions to do so")
-    @command.alias("gban")
-    async def cmd_globalban(self, msg: tg.events.newmessage, *users: tuple):
-        users = list(map(int, users))
-        if msg.is_reply:
-            replied_msg = await msg.get_reply_message()
-            users.append(replied_msg.from_id)
-        users = list(set(users))
-        chatcount = 0;
-        users_to_ban = []
-        for userid in users:
-            user = await self.bot.client.get_entity(userid)
-            users_to_ban.append(user)
-        async for dialog in self.bot.client.iter_dialogs():
-            if not dialog.is_group or not dialog.is_channel: continue
-            chat = await self.bot.client.get_entity(dialog.id)
-            async for user in self.bot.client.iter_participants(chat, filter=tg.tl.types.ChannelParticipantsAdmins):
-                if user.id == self.bot.uid:
-                    await self.banUsers(users_to_ban, chat)
-                    chatcount += 1
-                    break
-        return f"{len(users_to_ban)} users have been banned from {chatcount} chats!"
-
-    @command.desc("Ban users from the current channel")
-    async def cmd_ban(self, msg: tg.events.newmessage, *input_userids: tuple):
-        userids = list(map(int, input_userids))
-        if msg.is_reply:
-            replied_msg = await msg.get_reply_message()
-            userids.append(replied_msg.from_id)
-        chat = await msg.get_chat()
-        reply = await self.banUserIDs(userids, chat)
-        await msg.respond(reply, reply_to=msg.reply_to_msg_id)
-        await msg.delete()
-
-    async def banUserIDs(self, userids, chat):
-        userids = list(set(userids))
-        reply = f"{len(userids)} users have been banned from {chat.title}!\n"
-        for userid in userids:
-            user = await self.bot.client.get_entity(userid)
-            reply += "\n" + util.UserStr(user)
-            await self.banUser(user, chat)
-        return reply
-
-    async def banUsers(self, users, chat):
-        for user in users:
-            await self.banUser(user, chat)
-
-    async def banUser(self, user, chat):
-        rights = tg.tl.types.ChatBannedRights(until_date=None, view_messages=True)
-        ban_request = tg.tl.functions.channels.EditBannedRequest(chat, user, rights)
-        await self.bot.client(ban_request)
-
-    @command.desc("Ban users from the current chat by ID")
+    @command.desc("Ban user(s) from the current chat by ID")
     async def cmd_ban(self, msg, *input_ids):
         try:
             # Parse user IDs without duplicates
             user_ids = list(dict.fromkeys(map(int, input_ids)))
         except ValueError:
-            return ""
+            return "__Encountered invalid ID while parsing arguments.__"
 
         if msg.is_reply:
             reply_msg = await msg.get_reply_message()
             user_ids.append(reply_msg.from_id)
 
         chat = await msg.get_chat()
-        lines = [f"Banned {len(user_ids)} users:"]
-        await msg.result(f"Banning {len(user_ids)} users...")
+        single_user = len(user_ids) == 1
+        if single_user:
+            lines = []
+        else:
+            lines = [f"Banned {len(user_ids)} users:"]
+            await msg.result(f"Banning {len(user_ids)} users...")
 
         for user_id in user_ids:
             user = await self.bot.client.get_entity(user_id)
-            lines.append(f"    \u2022 {util.tg.mention_user(user)} (`{user_id}`)")
+            if single_user:
+                lines.append(f"**Banned** {util.tg.mention_user(user)} (`{user_id}`)")
+            else:
+                lines.append(f"    \u2022 {util.tg.mention_user(user)} (`{user_id}`)")
 
             rights = tg.tl.types.ChatBannedRights(until_date=None, view_messages=True)
             ban_request = tg.tl.functions.channels.EditBannedRequest(chat, user, rights)
-            await self.bot.client(ban_request)
+
+            try:
+                await self.bot.client(ban_request)
+            except tg.errors.ChatAdminRequiredError:
+                return "__I need permission to ban users in this chat.__"
 
         return "\n".join(lines)
 
-    @command.desc("Purge specified amount or all messages in the current chat")
-    @command.alias("prunemessages", "purgemsgs", "prunemsgs")
-    async def cmd_purgemessages(self, msg: tg.events.newmessage):  # , amount: int = None
-        await self.bot.client.delete_messages(msg.chat_id, [x for x in range(msg.id)])
-        await msg.result(f"Purged last {msg.id} messages!")
-
     @command.desc("Prune deleted members in this group or the specified group")
-    @command.alias("purgemembers")
-    async def cmd_prunemembers(self, msg, chat):
+    async def cmd_prune(self, msg, chat):
         incl_chat_name = bool(chat)
         if chat:
             chat = await self.bot.client.get_entity(chat)

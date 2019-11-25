@@ -2,7 +2,7 @@ import os
 import traceback
 
 from . import async_helpers, config, db, sentry, tg, time, version, system
-
+from . import bluscream
 
 run_sync = async_helpers.run_sync
 
