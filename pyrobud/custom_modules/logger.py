@@ -15,7 +15,7 @@ class LoggerModule(module.Module):
 
     async def on_chat_action(self, action: tg.events.chataction.ChatAction.Event):
         if not self.enabled: return
-        if action.user_id is not None and action.user_id != self.bot.uid: return
+        if hasattr(action, "user_id") and action.user_id is not None and action.user_id != self.bot.uid: return
         txt = action.stringify()
         notify = True
         if action.user_joined or action.user_left:
