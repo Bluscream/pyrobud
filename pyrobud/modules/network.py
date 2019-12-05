@@ -45,7 +45,11 @@ class NetworkModule(module.Module):
         await msg.result("Uploading text to [Hastebin](https://hastebin.com/)...")
 
         async with self.bot.http_session.post("https://hastebin.com/documents", data=text) as resp:
-            resp_data = await resp.json()
+            try:
+                resp_data = await resp.json()
+            except aiohttp.ContentTypeError:
+                return "__Hastebin is currently experiencing issues. Try again later.__"
+
             return f'https://hastebin.com/{resp_data["key"]}'
 
     @command.desc("Paste message text to Dogbin")
@@ -57,7 +61,11 @@ class NetworkModule(module.Module):
         await msg.result("Uploading text to [Dogbin](https://del.dog/)...")
 
         async with self.bot.http_session.post("https://del.dog/documents", data=text) as resp:
-            resp_data = await resp.json()
+            try:
+                resp_data = await resp.json()
+            except aiohttp.ContentTypeError:
+                return "__Dogbin is currently experiencing issues. Try again later.__"
+
             return f'https://del.dog/{resp_data["key"]}'
 
     @command.desc("Upload given file to file.io")
@@ -115,7 +123,7 @@ class NetworkModule(module.Module):
             return await resp.text()
 
     @command.desc("Update the embed for a link")
-    @command.alias("upd", "upde", "updl", "updatelink", "ul", "ulink")
+    @command.alias("upde", "updl", "updatelink", "ul", "ulink")
     async def cmd_update_link(self, msg, link):
         if not link and not msg.is_reply:
             return "__Provide or reply to a link to update it.__"

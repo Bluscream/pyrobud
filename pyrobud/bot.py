@@ -1,4 +1,5 @@
 import asyncio
+import bisect
 import importlib
 import inspect
 import logging
@@ -14,10 +15,14 @@ from . import command, module, modules, custom_modules, util
 
 
 class Listener:
-    def __init__(self, event, func, module):
+    def __init__(self, event, func, module, priority):
         self.event = event
         self.func = func
         self.module = module
+        self.priority = priority
+
+    def __lt__(self, other):
+        return self.priority < other.priority
 
 
 class Bot:
@@ -99,11 +104,11 @@ class Bot:
         for cmd in to_unreg:
             self.unregister_command(cmd)
 
-    def register_listener(self, mod, event, func):
-        listener = Listener(event, func, mod)
+    def register_listener(self, mod, event, func, priority=100):
+        listener = Listener(event, func, mod, priority)
 
         if event in self.listeners:
-            self.listeners[event].append(listener)
+            bisect.insort(self.listeners[event], listener)
         else:
             self.listeners[event] = [listener]
 
@@ -113,7 +118,7 @@ class Bot:
     def register_listeners(self, mod):
         for event, func in util.find_prefixed_funcs(mod, "on_"):
             try:
-                self.register_listener(mod, event, func)
+                self.register_listener(mod, event, func, priority=getattr(func, "listener_priority", 100))
             except:
                 self.unregister_listeners(mod)
                 raise
@@ -290,6 +295,9 @@ class Bot:
         await self.http_session.close()
         await self._db.close()
 
+        self.log.info("Running post-stop hooks")
+        await self.dispatch_event("stopped")
+
     async def dispatch_event(self, event, *args):
         tasks = set()
 
@@ -297,6 +305,9 @@ class Bot:
             listeners = self.listeners[event]
         except KeyError:
             return None
+
+        if not listeners:
+            return
 
         for l in listeners:
             task = self.loop.create_task(l.func(*args))

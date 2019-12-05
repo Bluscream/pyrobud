@@ -5,11 +5,21 @@ from datetime import datetime
 import psutil
 import speedtest
 import telethon as tg
-from .. import command, module, util
 from pprint import pprint
+
+import speedtest
+
+from .. import command, module, util, listener
+
 
 class SystemModule(module.Module):
     name = "System"
+
+    async def on_load(self):
+        self.restart_pending = False
+        self.update_restart_pending = False
+
+        self.db = self.bot.get_db("system")
 
     async def run_process(self, command, **kwargs):
         def _run_process():
@@ -173,3 +183,84 @@ class SystemModule(module.Module):
         el_str = f"\nTime: {util.time.format_duration_us(el_us)}"
         err = f"⚠️ Return code: {proc.returncode}" if proc.returncode != 0 else ""
         return f"```{output}```{err}{el_str}"
+    @command.desc("Restart the bot")
+    @command.alias("re", "rst")
+    async def cmd_restart(self, msg):
+        await msg.result("Restarting bot...")
+
+        # Save time and status message so we can update it after restarting
+        await self.db.put("restart_status_chat_id", msg.chat_id)
+        await self.db.put("restart_status_message_id", msg.id)
+        await self.db.put("restart_time", util.time.usec())
+
+        # Initiate the restart
+        self.restart_pending = True
+        self.log.info("Preparing to restart...")
+        await self.bot.client.disconnect()
+
+    async def on_start(self, time_us):
+        # Update restart status message if applicable
+        rs_time = await self.db.get("restart_time")
+        if rs_time is not None:
+            # Fetch status message info
+            rs_chat_id = await self.db.get("restart_status_chat_id")
+            rs_message_id = await self.db.get("restart_status_message_id")
+
+            # Delete DB keys first in case message editing fails
+            await self.db.delete("restart_time")
+            await self.db.delete("restart_status_chat_id")
+            await self.db.delete("restart_status_message_id")
+
+            # Calculate and show duration
+            duration = util.time.format_duration_us(util.time.usec() - rs_time)
+            self.log.info(f"Bot restarted in {duration}")
+            await self.bot.client.edit_message(rs_chat_id, rs_message_id, f"Bot restarted in {duration}.")
+
+    async def on_stopped(self):
+        # Restart the bot if applicable
+        if self.restart_pending:
+            self.log.info("Starting new bot instance...\n")
+            os.execv(sys.argv[0], sys.argv)
+
+    @command.desc("Update the bot from Git and restart")
+    @command.alias("up", "upd")
+    async def cmd_update(self, msg, remote_name):
+        if not util.git.have_git:
+            return "__The__ `git` __command is required for self-updating.__"
+
+        if self.update_restart_pending:
+            return await self.cmd_restart(msg)
+
+        # Attempt to get the Git repo
+        repo = await util.run_sync(lambda: util.git.get_repo())
+        if not repo:
+            return "__Unable to locate Git repository data.__"
+
+        await msg.result("Pulling changes...")
+        if remote_name:
+            # Attempt to get reuqested remote
+            try:
+                remote = await util.run_sync(lambda: repo.remote(remote_name))
+            except ValueError:
+                return f"__Remote__ `{remote_name}` __not found.__"
+        else:
+            # Get current branch's tracking remote
+            remote = await util.run_sync(util.git.get_current_remote)
+            if remote is None:
+                return f"__Current branch__ `{repo.active_branch.name}` __is not tracking a remote.__"
+
+        # Save old commit for diffing
+        old_commit = await util.run_sync(repo.commit)
+
+        # Pull from remote
+        self.log.info(f"Pulling from Git remote '{remote.name}'")
+        await util.run_sync(remote.pull)
+
+        # Don't restart yet if requirements were updated
+        for change in old_commit.diff():
+            if change.a_path == "requirements.txt":
+                self.update_restart_pending = True
+                return "Successfully pulled updates. Dependencies in `requirements.txt` were changed, so please update dependencies __before__ restarting the bot by re-running the `update` or `restart` command."
+
+        # Restart after updating
+        await self.cmd_restart(msg)

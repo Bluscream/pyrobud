@@ -10,7 +10,22 @@ from .. import command, module, util
 class AntibotModule(module.Module):
     name = "Antibot"
 
-    suspicious_keywords = ["investment", "profit", "binance", "binanse", "bitcoin", "testnet", "bitmex", "wealth"]
+    suspicious_keywords = [
+        "investment",
+        "profit",
+        "binance",
+        "binanse",
+        "bitcoin",
+        "testnet",
+        "bitmex",
+        "wealth",
+        "mytoken",
+        "no scam",
+        "legit",
+        "trading",
+        "binary option",
+        "talk with you in private",
+    ]
 
     suspicious_entities = [
         tg.types.MessageEntityUrl,
@@ -118,6 +133,16 @@ class AntibotModule(module.Module):
         except tg.errors.UserNotParticipantError:
             # Something else already banned the bot; we don't need to proceed
             return False
+        except ValueError:
+            # For some reason we don't have the access hash
+            # Try loading participants to get it
+            await self.bot.client.get_participants(chat)
+            try:
+                ch_participant = await self.bot.client(tg.tl.functions.channels.GetParticipantRequest(chat, sender))
+            except ValueError as e:
+                # Even that didn't help, maybe the user deleted their account; bail out
+                self.log.warning(f"Unable to fetch information for user {sender.id} in group {chat.id}", exc_info=e)
+
         participant = ch_participant.participant
 
         # Exempt the group creator
@@ -142,7 +167,7 @@ class AntibotModule(module.Module):
 
     def profile_check_invite(self, user):
         # Some spammers have Telegram invite links in their first or last names
-        return "t.me/" in user.first_name or (user.last_name and "t.me/" in user.last_name)
+        return "t.me/" in tg.utils.get_display_name(user)
 
     async def user_is_suspicious(self, user):
         # Some spammers have invites in their names

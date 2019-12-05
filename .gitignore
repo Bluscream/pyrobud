@@ -106,15 +106,31 @@ venv.bak/
 # Configuration files
 *.toml
 !config.example.toml
+
 # Telegram sessions
 *.session*
+
 # Stickers
 stickers/
+
 # Temporary atomic save artifacts
 *.tmp
 *.bak
 messages.*db
+
 # LevelDB databases
 *.db/
+
 # Data directory
 data/
+
+# PBR artifacts
+AUTHORS
+ChangeLog
+
+# Autoenv scripts
+.in
+.out
+
+# Visual Studio Code workspace settings
+.vscode
