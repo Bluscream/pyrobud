@@ -166,6 +166,7 @@ class Bot:
 
     def _load_modules_from_metamod(self, metamod, *, comment=None):
         for _sym in metamod.__all__:
+            if not hasattr(metamod, _sym): continue
             module_mod = getattr(metamod, _sym)
 
             if inspect.ismodule(module_mod):
@@ -270,8 +271,8 @@ class Bot:
         self.client.add_event_handler(self.on_message_deleted, tg.events.MessageDeleted)
         self.client.add_event_handler(self.on_command, tg.events.NewMessage(outgoing=True, func=self.command_predicate))
         self.client.add_event_handler(self.on_chat_action, tg.events.ChatAction)
-        if len(self.config["bot"]["auto_admins"]) > 0:
-            self.client.add_event_handler(self.on_raw_event, tg.events.Raw)
+        # if len(self.config["bot"]["auto_admins"]) > 0:
+        self.client.add_event_handler(self.on_raw_event, tg.events.Raw)
 
         self.log.info("Bot is ready")
         await self.dispatch_event("ready")
