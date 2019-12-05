@@ -8,8 +8,8 @@ msgpack
 pillow
 plyvel
 pycparser
+ratelimit
 sentry-sdk
 speedtest-cli
 telethon
 toml
-uvloop
