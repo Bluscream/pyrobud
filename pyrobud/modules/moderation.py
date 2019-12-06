@@ -1,9 +1,6 @@
 from datetime import datetime
-
 import telethon as tg
-
 from .. import command, module, util
-
 
 class ModerationModule(module.Module):
     name = "Moderation"

@@ -1,3 +1,10 @@
+import telethon as tg
+from .. import command, module
+
+
+class ModerationModuleAddon(module.Module):
+    name = "Moderation Extensions"
+
     @command.desc("Ban users from all chats where you have permissions to do so")
     @command.alias("gban")
     async def cmd_globalban(self, msg: tg.events.newmessage, *users: tuple):
@@ -6,7 +13,7 @@
             replied_msg = await msg.get_reply_message()
             users.append(replied_msg.from_id)
         users = list(set(users))
-        chatcount = 0;
+        chatcount = 0
         users_to_ban = []
         for userid in users:
             user = await self.bot.client.get_entity(userid)
@@ -20,9 +27,18 @@
                     chatcount += 1
                     break
         return f"{len(users_to_ban)} users have been banned from {chatcount} chats!"
-		
-	@command.desc("Purge specified amount or all messages in the current chat")
+
+    @command.desc("Purge specified amount or all messages in the current chat")
     @command.alias("prunemessages", "purgemsgs", "prunemsgs")
     async def cmd_purgemessages(self, msg: tg.events.newmessage):  # , amount: int = None
         await self.bot.client.delete_messages(msg.chat_id, [x for x in range(msg.id)])
         await msg.result(f"Purged last {msg.id} messages!")
+
+    async def banUsers(self, users, chat):
+        for user in users:
+            await self.banUser(user, chat)
+
+    async def banUser(self, user, chat):
+        rights = tg.tl.types.ChatBannedRights(until_date=None, view_messages=True)
+        ban_request = tg.tl.functions.channels.EditBannedRequest(chat, user, rights)
+        await self.bot.client(ban_request)
