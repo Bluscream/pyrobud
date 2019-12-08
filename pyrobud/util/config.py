@@ -38,71 +38,64 @@ def upgrade_v2(config, path):
         if os.path.exists("anon.session-journal"):
             os.rename("anon.session-journal", "main.session-journal")
 
-    config["version"] = 2
-    save(config, path)
-
-
-def migrate_v3_antibot(config, db):
-    if "antibot" in config:
-        log.info("Migrating antibot settings to database")
-        mcfg = config["antibot"]
-        mdb = db.prefixed_db("antibot.")
-
-        if mcfg["threshold_time"] != 30:
-            mdb.put_sync("threshold_time", mcfg["threshold_time"])
-
-        group_db = mdb.prefixed_db("groups.")
-        for gid in mcfg["group_ids"]:
-            group_db.put_sync(f"{gid}.enabled", True)
-            group_db.put_sync(f"{gid}.enable_time", now_sec())
-
-        del config["antibot"]
-
-
-def migrate_v3_snippets(config, db):
-    if "snippets" in config:
-        log.info("Migrating snippets to database")
-        mdb = db.prefixed_db("snippets.")
-
-        for snip, repl in config["snippets"].items():
-            mdb.put_sync(snip, repl)
-
-        del config["snippets"]
-
-
-def migrate_v3_stats(config, db):
-    if "stats" in config:
-        log.info("Migrating stats to database")
-        mdb = db.prefixed_db("stats.")
-
-        for stat, value in config["stats"].items():
-            mdb.put_sync(stat, value)
-
-        del config["stats"]
-
-
-def migrate_v3_stickers(config, db):
-    if "stickers" in config:
-        log.info("Migrating stickers to database")
-        mdb = db.prefixed_db("stickers.")
-
-        for sticker, value in config["stickers"].items():
-            mdb.put_sync(sticker, value)
-
-        del config["stickers"]
-
-    if "user" in config:
-        log.info("Migrating sticker settings to database")
-        mcfg = config["user"]
-        mdb = db.prefixed_db("sticker_settings.")
-
-        if "kang_pack" in mcfg:
-            mdb.put_sync("kang_pack", mcfg["kang_pack"])
-
-        del config["user"]
-
 
 def upgrade_v3(config, path):
+    def migrate_antibot(config, db):
+        if "antibot" in config:
+            log.info("Migrating antibot settings to database")
+            mcfg = config["antibot"]
+            mdb = db.prefixed_db("antibot.")
+
+            if mcfg["threshold_time"] != 30:
+                mdb.put_sync("threshold_time", mcfg["threshold_time"])
+
+            group_db = mdb.prefixed_db("groups.")
+            for gid in mcfg["group_ids"]:
+                group_db.put_sync(f"{gid}.enabled", True)
+                group_db.put_sync(f"{gid}.enable_time", now_sec())
+
+            del config["antibot"]
+
+    def migrate_snippets(config, db):
+        if "snippets" in config:
+            log.info("Migrating snippets to database")
+            mdb = db.prefixed_db("snippets.")
+
+            for snip, repl in config["snippets"].items():
+                mdb.put_sync(snip, repl)
+
+            del config["snippets"]
+
+    def migrate_stats(config, db):
+        if "stats" in config:
+            log.info("Migrating stats to database")
+            mdb = db.prefixed_db("stats.")
+
+            for stat, value in config["stats"].items():
+                mdb.put_sync(stat, value)
+
+            del config["stats"]
+
+    def migrate_stickers(config, db):
+        if "stickers" in config:
+            log.info("Migrating stickers to database")
+            mdb = db.prefixed_db("stickers.")
+
+            for sticker, value in config["stickers"].items():
+                mdb.put_sync(sticker, value)
+
+            del config["stickers"]
+
+        if "user" in config:
+            log.info("Migrating sticker settings to database")
+            mcfg = config["user"]
+            mdb = db.prefixed_db("sticker_settings.")
+
+            if "kang_pack" in mcfg:
+                mdb.put_sync("kang_pack", mcfg["kang_pack"])
+
+            del config["user"]
+
     bot_config = config["bot"]
 
     if "default_prefix" not in bot_config:
@@ -115,13 +108,10 @@ def upgrade_v3(config, path):
         bot_config["db_path"] = "main.db"
 
     with AsyncDB(plyvel.DB(config["bot"]["db_path"], create_if_missing=True)) as db:
-        migrate_v3_antibot(config, db)
-        migrate_v3_snippets(config, db)
-        migrate_v3_stats(config, db)
-        migrate_v3_stickers(config, db)
-
-    config["version"] = 3
-    save(config, path)
+        migrate_antibot(config, db)
+        migrate_snippets(config, db)
+        migrate_stats(config, db)
+        migrate_stickers(config, db)
 
 
 def upgrade_v4(config, path):
@@ -133,9 +123,6 @@ def upgrade_v4(config, path):
         bot_config["report_errors"] = True
         bot_config["report_username"] = False
 
-    config["version"] = 4
-    save(config, path)
-
 
 def upgrade_v5(config, path):
     bot_config = config["bot"]
@@ -144,5 +131,42 @@ def upgrade_v5(config, path):
         log.info("Adding default Sentry DSN to bot config section")
         bot_config["sentry_dsn"] = ""
 
-    config["version"] = 5
-    save(config, path)
+
+def upgrade_v6(config, path):
+    bot_config = config["bot"]
+
+    if "response_mode" not in bot_config:
+        log.info("Setting response mode to default 'edit'")
+        bot_config["response_mode"] = "edit"
+
+
+# Old version -> function to perform migration to new version
+upgrade_funcs = [
+    upgrade_v2,  # 1 -> 2
+    upgrade_v3,  # 2 -> 3
+    upgrade_v4,  # 3 -> 4
+    upgrade_v5,  # 4 -> 5
+    upgrade_v6,  # 5 -> 6
+]
+
+# Master upgrade function
+def upgrade(config, path):
+    # Get current version
+    if "version" in config:
+        cur_version = config["version"]
+    else:
+        cur_version = 1
+
+    # Already at latest version; nothing to do
+    if cur_version == len(upgrade_funcs) - 1:
+        return
+
+    # Upgrade each version sequentially
+    for upgrader in upgrade_funcs[cur_version - 1 :]:
+        target_version = cur_version + 1
+        log.info(f"Upgrading config to version {target_version}")
+        upgrader(config, path)
+        config["version"] = target_version
+
+        # Save config ASAP to prevent an inconsistent state if the next upgrade fails
+        save(config, path)

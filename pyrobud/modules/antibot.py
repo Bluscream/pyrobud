@@ -25,6 +25,9 @@ class AntibotModule(module.Module):
         "trading",
         "binary option",
         "talk with you in private",
+        "go_start",
+        "s.tart",
+        "cash out",
     ]
 
     suspicious_entities = [
@@ -130,18 +133,9 @@ class AntibotModule(module.Module):
         # Load group-specific user information
         try:
             ch_participant = await self.bot.client(tg.tl.functions.channels.GetParticipantRequest(chat, sender))
-        except tg.errors.UserNotParticipantError:
-            # Something else already banned the bot; we don't need to proceed
+        except (ValueError, tg.errors.UserNotParticipantError):
+            # User was already banned or deleted; we don't need to proceed
             return False
-        except ValueError:
-            # For some reason we don't have the access hash
-            # Try loading participants to get it
-            await self.bot.client.get_participants(chat)
-            try:
-                ch_participant = await self.bot.client(tg.tl.functions.channels.GetParticipantRequest(chat, sender))
-            except ValueError as e:
-                # Even that didn't help, maybe the user deleted their account; bail out
-                self.log.warning(f"Unable to fetch information for user {sender.id} in group {chat.id}", exc_info=e)
 
         participant = ch_participant.participant
 
