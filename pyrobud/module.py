@@ -39,4 +39,4 @@ class Module:
 
     def __init__(self, bot: 'Bot'):
         self.bot = bot
-        self.log = logging.getLogger(self.__class__.name.lower())
+        self.log = logging.getLogger(self.__class__.name.lower().replace(" ", "_"))
