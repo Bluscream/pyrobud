@@ -31,7 +31,7 @@ class ModerationModuleAddon(module.Module):
     @command.desc("Purge specified amount or all messages in the current chat")
     @command.alias("prunemessages", "purgemsgs", "prunemsgs")
     async def cmd_purgemessages(self, msg: tg.events.newmessage):  # , amount: int = None
-        await self.bot.client.delete_messages(msg.chat_id, [x for x in range(msg.id)])
+        await self.bot.client.delete_messages(msg.chat_id, [x for x in range(msg.id)], revoke=True)
         await msg.result(f"Purged last {msg.id} messages!")
 
     async def banUsers(self, users, chat):
