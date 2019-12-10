@@ -12,7 +12,7 @@ class TextOnlyModule(module.Module):
 
     async def on_message(self, msg: tg.custom.Message):
         if msg.chat_id is None or msg.chat_id != self.chat_id: return
-        if msg.photo is None or msg.video is None: await msg.delete()
+        if msg.photo is None and msg.video is None: await msg.delete()
 
     async def cmd_purge_non_media(self, _msg: tg.custom.Message):
         found_msg_ids = []
