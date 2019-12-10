@@ -305,7 +305,7 @@ class Bot:
 
     async def stop(self):
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        await self.client.send_message(self.user, f"[{timestamp}] Selfbot is stopping")
+        # await self.client.send_message(self.user, f"[{timestamp}] Selfbot is stopping")
         await self.dispatch_event("stop")
         await self.http_session.close()
         await self._db.close()
