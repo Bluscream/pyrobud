@@ -7,6 +7,19 @@ from base64 import b64encode, b64decode
 import telethon as tg
 from telethon.tl.types import InputPeerChannel
 
+
+def has_real_media(msg: tg.custom.Message):
+    return True if (msg.document or msg.photo) and msg.web_preview else False
+
+
+def has_affecting_media(msg: tg.custom.Message):
+    return True if msg.photo or msg.video or msg.sticker or msg.web_preview else False
+
+
+tg.custom.Message.has_real_media = has_real_media
+tg.custom.Message.has_affecting_media = has_affecting_media
+
+
 def splitMsg(msg, chars=4096):
     return [msg[i:i + chars] for i in range(0, len(msg), chars)]
 

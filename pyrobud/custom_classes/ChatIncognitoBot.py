@@ -27,7 +27,7 @@ class Emojis(object):
         searching = "🔍" # b'\\U0001f50d'
         start = "⬇️️️️" # u\2B07
         end = "⬆️"
-        # url = "🔓🔑"
+        url = "🔓🔑"
 
     class Partner(object):
         age = "📆"
@@ -37,6 +37,9 @@ class Emojis(object):
         Unknown = "🗣"
         Female = "👧"
         Male = "👦"
+
+    class Other(object):
+        AuthorMessage = "⚠"
 
 
 class Gender(Enum):
@@ -59,7 +62,7 @@ class SessionCloser(Enum):
 
 
 class Session(object):
-    state: SessionState = None
+    state: SessionState = SessionState.Unknown
     partner_gender: Gender = None
     partner_age: int = None
     partner_distance_km: int = None
@@ -110,7 +113,7 @@ class Session(object):
             self.partner_gender = Gender.Male
         # else: self.partner_gender = Gender.Unknown
 
-    def __init__(self, age=None, distance=None):  # , state: SessionState = SessionState.Searching
+    def __init__(self, age=None, distance=None):  #  = SessionState.Searching
         self.starttime = datetime.now()
         self.partner_age = age
         self.partner_distance_km = distance

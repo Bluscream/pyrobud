@@ -29,6 +29,18 @@ class CallUtilsModule(module.Module):
     async def cmd_total_call_duration(self, msg: tg.custom.Message):
         return await self.get_total_duration(msg.to_id)
 
+    @command.alias("tvd")
+    async def cmd_total_voice_duration(self, _msg: tg.custom.Message):
+        msg: tg.custom.Message
+        count = 0
+        duration = 0
+        async for msg in self.bot.client.iter_messages(await _msg.get_input_chat(), filter=tg.types.InputMessagesFilterVoice):
+            if msg.voice:
+                count += 1
+                duration += msg.media.document.attributes[0].duration
+        duration = timedelta(seconds=duration)
+        return f"`{count}` voice messages with a total duration of `{duration}`"
+
     async def get_calls_for(self, target_id = "0"):
         calls = []
         msg: tg.custom.Message

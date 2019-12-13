@@ -1,12 +1,9 @@
-import telethon as tg, asyncio
-from datetime import datetime, timedelta
+import asyncio
 from random import choice, randrange
-from pyrobud import module, command
+from pyrobud import module
 from re import match, compile
-from typing import List
 from urllib.parse import urlparse
-from pprint import pformat, pprint
-from json import dumps
+from pyrobud.util.bluscream import has_affecting_media
 
 from ..custom_classes.ChatIncognitoBot import *
 
@@ -25,7 +22,8 @@ class ChatIncognitoBot(module.Module):
     bot_uid = 339959826
     log_channel = "ChatIncognitoBotLog"
 
-    session_state: SessionState
+    check_for_media = True
+    session_state: SessionState = SessionState.Unknown
     sessions: List[Session] = []
 
     def printSessions(self):
@@ -60,8 +58,9 @@ class ChatIncognitoBot(module.Module):
     def newSession(self, msg: tg.custom.Message = None) -> Session:
         if self.sessionActive: self.activeSession.close()
         session = self.activeSession
+        session.state = SessionState.Active
         if msg:
-            line: str
+            # line: str
             for line in msg.text.splitlines():
                 print("first line char:", line[:1])
                 if line.startswith(Emojis.Partner.age):
@@ -70,34 +69,51 @@ class ChatIncognitoBot(module.Module):
                     session.partner_distance_km = int(line.split(" ")[2])
         return session
 
-    async def greet(self, msg: tg.custom.Message):
+    async def greet(self, msg: tg.custom.Message, session: Session):
+        if session.greeted: return
         await asyncio.sleep(randrange(1, 3)) # Todo: Sometimes wait for them to write first
         prefix: str = choice(self.prefixes)
         if choice((True, False)): prefix = prefix.lower()
+        if session.state is not SessionState.Active: return
         await msg.respond(prefix + " " + choice(self.suffixes))
-        self.activeSession.greeted = True
+        session.greeted = True
 
     async def on_message(self, msg: tg.custom.Message):
         if msg.chat_id != self.bot_uid: return
+        print("=== NEW MESSAGE ===")
         self.printSessions()
-        if msg.from_id == self.bot.uid:
-            if msg.text.lower() == "/session":
-                if self.sessions: await msg.edit(self.sessions[-1].print())
+        if msg.from_id == self.bot.uid: # self -> bot
+            lower_txt = msg.text.lower()
+            if lower_txt == "/session":
+                lines = list()
+                lines.append(f"Session State: `{self.session_state}`")
+                lines.append(f"Media blacklisted: `{self.check_for_media}`")
+                lines.append(f"Last deleted media at: `{self.last_deleted_media}`")
+                lines.append(f"Sessions: `{len(self.sessions)}`")
+                if self.sessions: lines.append(f"Last Session: `{self.sessions[-1].print()}`")
+                if len(lines) > 0: await msg.edit("\n".join(lines))
+            elif lower_txt == "/media":
+                self.check_for_media = not self.check_for_media
+                await self.replyAndDelete(msg, text=f"You are {'no longer allowed to send media ❌' if self.check_for_media else 'allowed to send media now ✔'}", delete_after_s=15, delete_original=True)
         elif msg.from_id == self.bot_uid:
-            if msg.media is not None and not msg.text.startswith("⚠️"): # Media
+            # print("check_for_media:", self.check_for_media, "has_affecting_media:", has_affecting_media(msg), "startswith(Emojis.Other.AuthorMessage):", msg.text.startswith(Emojis.Other.AuthorMessage))
+            if self.check_for_media and has_affecting_media(msg) and not msg.text.startswith(Emojis.Other.AuthorMessage): # Media
                 _now = datetime.now()
                 if self.last_deleted_media < _now - timedelta(minutes=10):
                     await msg.reply("`Media deleted. Please don't send media directly here.`")
                     self.last_deleted_media = _now
                 await msg.delete()
-            print("partnermsg_pattern", self.partnermsg_pattern)
+            # print("partnermsg_pattern", self.partnermsg_pattern)
             r_match = self.partnermsg_pattern.match(msg.text)
             print("r_match", r_match)
             if r_match: # Partner Message
-                print("got partner message (session active:", self.sessionActive) # , ", greeted:", self.activeSession.greeted)
+                print("got partner message (session active:", self.sessionActive, ")") # , ", greeted:", self.activeSession.greeted)
                 if not self.sessionActive: self.newSession()
-                elif not self.activeSession.greeted: await self.greet(msg)
+                if not self.activeSession.greeted: await self.greet(msg, self.activeSession)
+                # self.activeSession.state = SessionState.Active
+                self.session_state = SessionState.Active
                 self.activeSession.setGender(r_match.group(1))
+                self.activeSession.messages.append(msg.id)
             else: # Bot Message
                 print("got bot message", Emojis.Session.start, Emojis.Session.end, Emojis.Session.searching)
                 if Emojis.Session.end in msg.text:
@@ -111,14 +127,17 @@ class ChatIncognitoBot(module.Module):
                     #  await self.replyAndDelete(msg, Commands.new_chat, delete_after_s=10)
                     if Emojis.Session.searching not in msg.text: await msg.reply(Commands.new_chat)
                     print("session stopped!")
-                for char in list(msg.text):
+                """
+                for char in list(msg.text): # todo: remove debug shit
                     print(char, "==", Emojis.Session.start, ":", char == Emojis.Session.start, char.encode('ascii', 'backslashreplace'))
+                """
                 print(msg.text)
                 print("Emojis.Session.start in msg.text ==", Emojis.Session.start in msg.text)
+
                 if Emojis.Session.start in msg.text:
                     print("Emojis.Session.start in msg.text")
                     self.newSession(msg)
-                    if not self.activeSession.greeted and choice(True, False): await self.greet(msg)
+                    if not self.activeSession.greeted and choice(True, False): await self.greet(msg, self.activeSession)
                     print("new session!")
                 if Emojis.Session.searching in msg.text:
                     print("Emojis.Session.searching in msg.text")
@@ -128,6 +147,6 @@ class ChatIncognitoBot(module.Module):
 
 
     async def on_message_edit(self, event: tg.events.MessageEdited.Event):
-        if event.chat_id == 339959826 and event.message.from_id is not None and event.message.from_id == self.bot.uid:
+        if event.chat_id == 339959826 and event.message.from_id is not None and event.message.from_id == self.bot.uid and not event.message.text.startswith("/"):
             await event.message.reply("/revoke")
             await event.message.respond(event.message.text)
