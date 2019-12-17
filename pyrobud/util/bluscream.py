@@ -19,7 +19,7 @@ def has_affecting_media(msg: tg.custom.Message):
 tg.custom.Message.has_real_media = has_real_media
 tg.custom.Message.has_affecting_media = has_affecting_media
 
-telegram_uid_regex = compile(r"(?<!\d)\d{6-9}(?!\d)")
+telegram_uid_regex = compile(r"(?<!\d)\d{6,9}(?!\d)")
 
 def splitMsg(msg, chars=4096):
     return [msg[i:i + chars] for i in range(0, len(msg), chars)]
