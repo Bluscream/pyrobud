@@ -6,7 +6,7 @@ from base64 import b64encode, b64decode
 
 import telethon as tg
 from telethon.tl.types import InputPeerChannel
-
+from re import compile
 
 def has_real_media(msg: tg.custom.Message):
     return True if (msg.document or msg.photo) and msg.web_preview else False
@@ -19,6 +19,7 @@ def has_affecting_media(msg: tg.custom.Message):
 tg.custom.Message.has_real_media = has_real_media
 tg.custom.Message.has_affecting_media = has_affecting_media
 
+telegram_uid_regex = compile(r'\d{8,9}')
 
 def splitMsg(msg, chars=4096):
     return [msg[i:i + chars] for i in range(0, len(msg), chars)]
@@ -30,14 +31,20 @@ def ChatStr(chat: tg.types.Chat):
     return f"{chat.id}"
 
 
-def UserStr(user: tg.types.User, full: bool = False):
-    fullname = user.first_name
+def UserStr(user: tg.types.User, full: bool = False, dont_mention: bool = False):
+    if dont_mention:
+        return f'<user id="{user.id}" first_name="{user.first_name}" last_name="{user.last_name}" user_name="{user.username}"/>'
+    fullname = ""
+    if user.first_name: fullname += user.first_name
     if user.last_name: fullname += f" {user.last_name}"
-    result = f"\"[{fullname}](tg://user?id={user.id})\""
+    result = f"\"[{fullname if fullname else user.id}](tg://user?id={user.id})\""
     if full:
         if user.username: result += f" @{user.username}"
         if user.id: result += f" (`{user.id})`"
     return result
+
+def ParseUserStr(first_name: str = None, last_name: str = None, user_name: str = None, id: int = None, full: bool = None):
+    return UserStr(tg.types.User(id, first_name=first_name, last_name=last_name, username=user_name), full)
 
 
 def sanitize(input):
