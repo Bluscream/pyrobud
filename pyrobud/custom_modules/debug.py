@@ -2,14 +2,12 @@ from re import compile, MULTILINE
 
 import telethon as tg
 
-from pyrobud.util.bluscream import UserStr
+from pyrobud.util.bluscream import UserStr, telegram_uid_regex
 from .. import command, module
 
 
 class DebugModuleAddon(module.Module):
     name = "Debug Extensions"
-
-    uid_regex = compile(r"(?<!\d)\d{9}(?!\d)")
 
     @command.desc("Dump all the data of a message to your cloud")
     @command.alias("mdp")
@@ -25,7 +23,7 @@ class DebugModuleAddon(module.Module):
     async def cmd_idlinks(self, msg: tg.custom.Message):
         if not msg.is_reply: return
         reply_msg = await msg.get_reply_message()
-        matches = self.uid_regex.finditer(reply_msg.text, MULTILINE)
+        matches = telegram_uid_regex.finditer(reply_msg.text, MULTILINE)
         uids = list()
         for matchNum, match in enumerate(matches, start=1):
             if not match.group() in uids:
