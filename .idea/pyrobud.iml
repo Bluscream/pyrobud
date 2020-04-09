@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="adguard-telegram-bot" />
     <orderEntry type="module" module-name="rheinlandfurbot" />
+    <orderEntry type="module" module-name="pyTeamspeak" />
   </component>
 </module>

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../adguard-telegram-bot/.idea/adguard-telegram-bot.iml" filepath="$PROJECT_DIR$/../adguard-telegram-bot/.idea/adguard-telegram-bot.iml" />
+      <module fileurl="file://P:/Projects/Python/pyTeamspeak/.idea/pyTeamspeak.iml" filepath="P:/Projects/Python/pyTeamspeak/.idea/pyTeamspeak.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pyrobud.iml" filepath="$PROJECT_DIR$/.idea/pyrobud.iml" />
       <module fileurl="file://$PROJECT_DIR$/../rheinlandfurbot/.idea/rheinlandfurbot.iml" filepath="$PROJECT_DIR$/../rheinlandfurbot/.idea/rheinlandfurbot.iml" />
     </modules>
