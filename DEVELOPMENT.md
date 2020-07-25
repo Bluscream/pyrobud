@@ -122,19 +122,19 @@ There are several internal bot events that are not directly from Telegram:
   - **Called when the module is loaded** so you can perform initialization
   - Initialization in `__init__` is discouraged because calling coroutines in it
     is impossible
-  - This is called very early, *before* connecting to Telegram, so take care to
+  - This is called very early, _before_ connecting to Telegram, so take care to
     not call any methods on the Telegram client
   - Note that the module must be **ready to go** after this event, since
-    Telegram event listeners are registered *before* the start event is
+    Telegram event listeners are registered _before_ the start event is
     dispatched to prevent missed events
   - **Arguments:** none
 - ###### `start`
   - **Called when the bot is ready to go**, after connecting to Telegram and
     performing basic bookkeeping tasks such as fetching the user ID
   - Useful for performing initialization that requires calling Telegram
-  - Called *before* catching up on events received during downtime, so performing
+  - Called _before_ catching up on events received during downtime, so performing
     most initialization here is safe
-  - Telegram event handlers are registered *before* this event fires to prevent
+  - Telegram event handlers are registered _before_ this event fires to prevent
     missed events, so the module's event handlers and commands
     **should still work** before this, albeit not at full potential
   - **Arguments:** current epoch time in microseconds
@@ -200,14 +200,14 @@ Decorators are used to specify additional properties:
 - Aliases: `@command.alias("alias1", "alias2")`
 - Usage: `@command.usage("[text to echo?, or reply]", optional=True, reply=True)`
   - This is a string shown to the user that describes how to use the command
-  - `optional=True` means that this command can accept input but doesn't *require*
+  - `optional=True` means that this command can accept input but doesn't _require_
     it
-    - If disabled *and* the usage decorator is present, the command will not be
+    - If disabled _and_ the usage decorator is present, the command will not be
       called if no input is given
   - `reply=True` means that this command can accept input from the replied-to message
-    - If disabled, *only* arguments given in the invocation message itself will
+    - If disabled, _only_ arguments given in the invocation message itself will
       be accepted
-    - For instance, calling a command with this *enabled* in a reply to a message
+    - For instance, calling a command with this _enabled_ in a reply to a message
       that contains `x` and providing no arguments will cause the input to be set
       to `x` — the text from the replied-to message.
 
@@ -245,16 +245,18 @@ manually instead of returning a string.
 `ctx.respond` provides some keyword-only arguments to control its behavior:
 
 - Response mode: `mode`
+
   - `edit`: Edit the invocation message with the response
   - `reply`: Reply to the invocation message with the response
   - `repost`: Delete the invocation message and send the response in reply to
-  the invocation message's replied-to message, if any
+    the invocation message's replied-to message, if any
 
 - Overflow handling mode: `overflow`
+
   - `truncate`: Send a single message that's as large as possible and discard
-  any remaining text with a truncation indicator ("... (truncated)")
+    any remaining text with a truncation indicator ("... (truncated)")
   - `split`: Split and send message into pages that are each as large as
-  possible
+    possible
 
 - Maximum number of pages if using the `split` overflow mode: `max_pages`
   - Messages that don't fit in this many pages will be truncated at the end.
@@ -295,7 +297,7 @@ during startup.
 - **Modules** just need to be placed in the `modules` or `custom_modules`
   folders, known as "metamodules"
   - The metamodules take care of probing the modules
-  - It is *possible* to define multiple modules in one file, but this is
+  - It is _possible_ to define multiple modules in one file, but this is
     discouraged
   - Instead, you should create one file per module and the filename should be
     the name of the module in `snake_case`
@@ -345,7 +347,7 @@ or ask for help in [the support chat on Telegram](https://t.me/pyrobud).
 
 Remember that there is also a comprehensive suite of modules included by default
 in the "modules" folder. Please **refer to all of those** if you are confused
-about something *before* you ask, since it saves everyone time in the end. Don't
+about something _before_ you ask, since it saves everyone time in the end. Don't
 be afraid to look through the bot core either — most parts are fairly well
 commented, so they should not be too difficult to inspect.
 
