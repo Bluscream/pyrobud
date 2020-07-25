@@ -23,7 +23,3 @@ class Bluscream(module.Module):
 
     async def cmd_bluscream(self, msg):
         return "lol"
-
-    async def cmd_conv(self, ctx: command.Context):
-        async for message in self.bot.client.iter_messages(ctx.msg.chat_id, search='⤵️ Joined "️'):
-            print(message.id)

@@ -9,21 +9,34 @@ from typing import ClassVar, Optional
 
 class NoPMModule(module.Module):
     name: ClassVar[str] = "No PM"
-    db: util.db.AsyncDB
 
     async def on_load(self) -> None:
-        self.db = self.bot.get_db("nopm")
+        self.db: util.db.AsyncDB = self.bot.get_db("nopm")
 
     async def on_raw_event(self, event: MessageService):
         if not hasattr(event, "message"): return
         if not hasattr(event.message, "action"): return
         if not isinstance(event.message.action, tg.tl.types.MessageActionPhoneCall): return
-        await self.bot.client.send_message(event.message.to_id, await self.get_total_duration(event.message.to_id))
 
     @command.desc("")
     @command.alias("toggledm", "nopm", "nodm")
-    async def cmd_togglepm(self, ctx: command.Context):
-        calls = await self.get_calls_for(ctx.msg.to_id)
-        if len(calls) < 1: return "No calls yet"
-        call = next( (x for x in calls if hasattr(x.action, "duration") and x.action.duration is not None), None)
-        return f"Last call was `{timedelta(seconds=call.action.duration)}` long."
+    async def cmd_togglepm(self, ctx: command.Context, arg: str = ""):
+        chats: list = await self.db.get("chats")
+        txt = ""
+        if arg == "list":
+            txt = f"PMs not allowed in:\n"
+            for chat in chats:
+                try:
+                    chat = await self.bot.client.get_entity(int(chat))
+                    txt += f"\n{util.bluscream.ChatStr(chat)}"
+                except: txt += f"\n`{chat}`"
+        elif arg == "clear": await self.db.put("chats", list())
+        else:
+            if (ctx.msg.chat_id in chats):
+                chats.remove(ctx.msg.chat_id)
+                txt = f"Private messages are now allowed in {util.bluscream.ChatStr(ctx.msg.chat)}!"
+            else:
+                chats.append(ctx.msg.chat_id)
+                txt = f"Private messages no longer allowed in {util.bluscream.ChatStr(ctx.msg.chat)}!"
+            await self.db.put("chats", chats)
+        await ctx.respond(txt)

@@ -38,3 +38,8 @@ class LoggerModule(module.Module):
         self.enabled = not self.enabled
         status = "enabled" if self.enabled else "disabled"
         return f"Selflog is now **{status}**."
+
+    async def cmd_joinlogconv(self, ctx: command.Context):
+        message: tg.custom.Message
+        async for message in self.bot.client.iter_messages(ctx.msg.chat_id, search='⤵️ Joined "️'):
+            await message.forward_to("JoinLog")
