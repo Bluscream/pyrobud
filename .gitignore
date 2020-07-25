@@ -52,3 +52,6 @@ data/
 
 # PyCharm project
 .idea/
+/messages.sqlitedb
+/..gitignore.swp
+config.toml

@@ -31,9 +31,10 @@ class StatsModule(module.Module):
 
     async def on_load(self) -> None:
         self.db = self.bot.get_db("stats")
-
+        if not (hasattr(self.bot, "stop_time_usec")): self.bot.stop_time_usec = 0
+        if not (hasattr(self.bot, "start_time_usec")): self.bot.start_time_usec = 0
         # Log migration message if applicable
-        if await self.db.has("stop_time_usec") or await self.db.has("uptime"):
+        if await self.db.has("stop_time_usec") and await self.db.has("uptime"):
             self.log.info("Migrating stats timekeeping format")
 
         # Perform last stop_time_usec increment to prepare for migration
