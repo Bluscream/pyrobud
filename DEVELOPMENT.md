@@ -128,7 +128,7 @@ There are several internal bot events that are not directly from Telegram:
     Telegram event listeners are registered *before* the start event is
     dispatched to prevent missed events
   - **Arguments:** none
-- `start`
+- ###### `start`
   - **Called when the bot is ready to go**, after connecting to Telegram and
     performing basic bookkeeping tasks such as fetching the user ID
   - Useful for performing initialization that requires calling Telegram

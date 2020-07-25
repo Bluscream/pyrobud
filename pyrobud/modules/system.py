@@ -173,6 +173,11 @@ class SystemModule(module.Module):
         if not repo:
             return "__Unable to locate Git repository data.__"
 
+        prefix = util.system.get_venv_path()
+        if prefix:
+            pip = str(Path(prefix) / "bin" / "pip")
+            print(f"{pip} install {repo.working_tree_dir}")
+
         if remote_name:
             # Attempt to get requested remote
             try:
@@ -204,7 +209,7 @@ class SystemModule(module.Module):
             prefix = util.system.get_venv_path()
             if prefix:
                 pip = str(Path(prefix) / "bin" / "pip")
-
+                print(f"{pip} install {repo.working_tree_dir}")
                 await ctx.respond("Updating dependencies...")
                 stdout, _, ret = await util.system.run_command(
                     pip, "install", repo.working_tree_dir

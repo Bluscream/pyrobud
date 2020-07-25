@@ -22,4 +22,5 @@ class Bluscream(module.Module):
         pass
 
     async def cmd_bluscream(self, msg):
-        return "lol"
+        pip = str(Path(util.system.get_venv_path()) / "bin" / "pip")
+        print(f"{pip} install {repo.working_tree_dir}")

@@ -55,3 +55,5 @@ data/
 /messages.sqlitedb
 /..gitignore.swp
 config.toml
+/main.db
+/main.db_
