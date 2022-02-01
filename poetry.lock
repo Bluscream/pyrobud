@@ -599,7 +599,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "tomlkit"
-version = "0.8.0"
+version = "0.9.0"
 description = "Style preserving TOML library"
 category = "main"
 optional = false
@@ -685,7 +685,7 @@ fast = ["cryptg"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "319e3cc5fb1544442101b106654912cc0cde79402ab541dcb3d2a7884e0fd64c"
+content-hash = "be3e60d6785779dc3d15edd8ec2e949c7c55900bb7f272ce5fc7a396047c2788"
 
 [metadata.files]
 aiohttp = [
@@ -1400,8 +1400,8 @@ tomli = [
     {file = "tomli-1.2.3.tar.gz", hash = "sha256:05b6166bff487dc068d322585c7ea4ef78deed501cc124060e0f238e89a9231f"},
 ]
 tomlkit = [
-    {file = "tomlkit-0.8.0-py3-none-any.whl", hash = "sha256:b824e3466f1d475b2b5f1c392954c6cb7ea04d64354ff7300dc7c14257dc85db"},
-    {file = "tomlkit-0.8.0.tar.gz", hash = "sha256:29e84a855712dfe0e88a48f6d05c21118dbafb283bb2eed614d46f80deb8e9a1"},
+    {file = "tomlkit-0.9.0-py3-none-any.whl", hash = "sha256:c1b0fc73abd4f1e77c29ea4061ca0f2e11cbfb77342e17df3d3fdd496fc3f899"},
+    {file = "tomlkit-0.9.0.tar.gz", hash = "sha256:5a83672c565f78f5fc8f1e44e5f2726446cc6b765113efd21d03e9331747d9ab"},
 ]
 typed-ast = [
     {file = "typed_ast-1.5.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:183b183b7771a508395d2cbffd6db67d6ad52958a5fdc99f450d954003900266"},
