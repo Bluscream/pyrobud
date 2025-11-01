@@ -12,6 +12,7 @@ from .database_provider import DatabaseProvider
 from .event_dispatcher import EventDispatcher
 from .module_extender import ModuleExtender
 from .telegram_bot import TelegramBot
+from ..custom_classes.DataCenter import DataCenters
 
 
 class Bot(
@@ -24,6 +25,7 @@ class Bot(
     client: tg.TelegramClient
     loop: asyncio.AbstractEventLoop
     stopping: bool
+    dc: DataCenters
 
     def __init__(self, config: Config):
         self.config = config
