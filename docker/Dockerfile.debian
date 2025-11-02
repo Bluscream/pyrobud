@@ -90,6 +90,9 @@ COPY --from=go-build /go/bin/corrupter /usr/local/bin
 ENV PATH="/opt/venv/bin:$PATH"
 COPY --from=python-build /opt/venv /opt/venv
 
+# Copy built-in custom modules to the custom_modules directory
+COPY --from=python-build /opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules /opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules
+
 # Set runtime settings
 USER pyrobud
 WORKDIR /data/cfg

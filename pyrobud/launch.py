@@ -64,7 +64,9 @@ def main(*, config_path: str = DEFAULT_CONFIG_PATH) -> None:
         util.sentry.init()
 
     # Use preliminary loop for config upgrading
-    loop = asyncio.get_event_loop()
+    # Python 3.14+: create new event loop instead of get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     aiorun.run(_upgrade(config, config_path), stop_on_unhandled_errors=True, loop=loop)
     loop.close()
 
