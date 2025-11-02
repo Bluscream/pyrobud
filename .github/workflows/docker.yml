@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - upstream
   workflow_dispatch:
 
 env:
