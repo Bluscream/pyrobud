@@ -30,7 +30,6 @@ RUN apt-get update && apt-get install -y \
         liblcms2-dev \
         libwebp-dev \
         libssl-dev \
-        cargo \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/venv
@@ -97,4 +96,4 @@ WORKDIR /data/cfg
 
 # Use shell form to allow environment variable substitution
 ENV CONFIG_FILE=config.toml
-CMD sh -c "pyrobud -c /data/cfg/${CONFIG_FILE}"
+CMD ["sh", "-c", "pyrobud -c /data/cfg/${CONFIG_FILE}"]

@@ -27,8 +27,7 @@ RUN apk add --no-cache \
         libjpeg-turbo-dev \
         lcms2-dev \
         libwebp-dev \
-        openssl-dev \
-        cargo
+        openssl-dev
 RUN mkdir -p /opt/venv
 WORKDIR /opt/venv
 RUN python3 -m venv /opt/venv
@@ -90,4 +89,4 @@ WORKDIR /data/cfg
 
 # Use shell form to allow environment variable substitution
 ENV CONFIG_FILE=config.toml
-CMD sh -c "pyrobud -c /data/cfg/${CONFIG_FILE}"
+CMD ["sh", "-c", "pyrobud -c /data/cfg/${CONFIG_FILE}"]
