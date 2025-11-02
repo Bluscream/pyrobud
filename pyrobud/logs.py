@@ -20,6 +20,8 @@ def setup_logging(log_file: Optional[str] = None) -> None:
                   Supports rotation to prevent huge files (max 10MB, 5 backups).
     """
 
+    print(f"[DEBUG] setup_logging called with log_file={log_file}")
+
     logging.root.setLevel(LOG_LEVEL)
     
     # Console handler with colors
@@ -32,10 +34,15 @@ def setup_logging(log_file: Optional[str] = None) -> None:
     root.setLevel(LOG_LEVEL)
     root.addHandler(stream)
     
+    print(f"[DEBUG] Console logging configured")
+    
     # Optional file handler (without colors, with timestamps)
     if log_file:
+        print(f"[DEBUG] Setting up file handler for: {log_file}")
         log_path = Path(log_file).expanduser().resolve()
+        print(f"[DEBUG] Resolved log path: {log_path}")
         log_path.parent.mkdir(parents=True, exist_ok=True)
+        print(f"[DEBUG] Created parent directory: {log_path.parent}")
         
         file_formatter = logging.Formatter(LOG_FORMAT_FILE)
         file_handler = RotatingFileHandler(
@@ -48,5 +55,10 @@ def setup_logging(log_file: Optional[str] = None) -> None:
         file_handler.setFormatter(file_formatter)
         root.addHandler(file_handler)
         
+        print(f"[DEBUG] File handler added to root logger")
+        
         # Log that file logging is enabled
         logging.info(f"File logging enabled: {log_path}")
+        print(f"[DEBUG] Logged info message about file logging")
+    else:
+        print(f"[DEBUG] No log file specified, console-only mode")
