@@ -120,7 +120,7 @@ package manager to make things easier to maintain, which works with pip through
 PEP-517. This is a relatively new standard, so a newer version of pip is necessary
 to make it work.
 
-Upgrade to pip 19 to fix this issue: `pip3 install -U pip`
+Upgrade to the latest pip to fix this issue: `pip3 install -U pip`
 
 ## Configuration
 

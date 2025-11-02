@@ -10,7 +10,7 @@ makes it easier for you to upstream your code in the future should you decide to
 do so. There are really no downsides to following the upstream code style in
 out-of-tree code.
 
-It is expected that you possess basic knowledge of **Python 3.6** or newer
+It is expected that you possess basic knowledge of **Python 3.11** or newer
 *before* writing code for this project.
 
 **Please read the ENTIRE page before writing code for this project!**
