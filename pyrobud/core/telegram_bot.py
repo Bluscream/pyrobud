@@ -60,6 +60,12 @@ class TelegramBot(MixinBase):
         if not isinstance(api_hash, str):
             raise TypeError("API hash must be a string")
 
+        # Ensure session file's parent directory exists
+        from pathlib import Path
+        session_path = Path(session_name)
+        if session_path.parent != Path('.'):
+            session_path.parent.mkdir(parents=True, exist_ok=True)
+
         # Initialize Telegram client with gathered parameters
         self.client = tg.TelegramClient(
             session_name, api_id, api_hash, connection_retries=10, retry_delay=5
