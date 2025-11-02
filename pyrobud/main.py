@@ -1,5 +1,7 @@
 import argparse
 import logging
+import os
+from pathlib import Path
 
 from . import DEFAULT_CONFIG_PATH, __description__, launch, logs
 
@@ -12,11 +14,35 @@ parser.add_argument(
     default=DEFAULT_CONFIG_PATH,
     help="config file to use",
 )
+parser.add_argument(
+    "--log-file",
+    metavar="PATH",
+    type=str,
+    default=None,
+    help="optional log file path (also via PYROBUD_LOG_FILE env var or config [logging] section)",
+)
 
 args = parser.parse_args()
 
+# Determine log file from CLI arg, env var, or config file
+# Priority: CLI arg > env var > config file
+log_file = args.log_file or os.getenv("PYROBUD_LOG_FILE")
+
+if not log_file:
+    # Try to read from config file as last resort
+    try:
+        import tomlkit
+        config_path = Path(args.config_path)
+        if config_path.exists():
+            config_data = config_path.read_text()
+            config = tomlkit.loads(config_data)
+            log_file = config.get("logging", {}).get("log_file")
+    except Exception:
+        # Silently ignore config read errors - logging will work without file
+        pass
+
 log = logging.getLogger("launch")
-logs.setup_logging()
+logs.setup_logging(log_file=log_file)
 
 log.info("Loading code...")
 

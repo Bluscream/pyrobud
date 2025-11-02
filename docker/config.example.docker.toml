@@ -4,6 +4,12 @@
 # Config schema version. DO NOT TOUCH!
 version = 11
 
+[logging]
+# Optional: Path to log file for persistent logs
+# For Docker: mount a volume to persist logs, e.g., /data/logs/pyrobud.log
+# If not set, use 'docker logs <container>' to view output
+# log_file = "/data/logs/pyrobud.log"
+
 [telegram]
 # Client API ID from https://my.telegram.org/apps
 api_id = 123456

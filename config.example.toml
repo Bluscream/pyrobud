@@ -2,6 +2,16 @@
 # The config upgrader/migrator system will update this automatically as necessary.
 version = 11
 
+[logging]
+# Optional: Path to log file for persistent logs
+# If not set, logs only go to console (stdout/stderr)
+# Supports rotation: max 10MB per file, keeps 5 backups
+# Can also be set via:
+#   - CLI: --log-file /path/to/pyrobud.log
+#   - Env: PYROBUD_LOG_FILE=/path/to/pyrobud.log
+# Priority: CLI arg > env var > config file
+# log_file = "pyrobud.log"
+
 [telegram]
 # Client API ID used for authentication, obtained from https://my.telegram.org/apps
 api_id = 123456

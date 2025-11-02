@@ -179,6 +179,20 @@ to work properly.
 To start the bot, type `python3 main.py` if you are running it in-place or use
 command corresponding to your chosen installation method above.
 
+### Optional File Logging
+
+By default, logs are output to the console. You can enable persistent file logging using:
+
+1. **Command line:** `python3 -m pyrobud --log-file pyrobud.log`
+2. **Environment variable:** `export PYROBUD_LOG_FILE=pyrobud.log`
+3. **Config file:** Add to your `config.toml`:
+   ```toml
+   [logging]
+   log_file = "pyrobud.log"
+   ```
+
+Log files automatically rotate at 10MB with 5 backups kept. Priority: CLI arg > env var > config file.
+
 When asked for your phone number, it is important that you type out the **full**
 phone number of your account, including the country code, without any symbols
 such as spaces, hyphens, pluses, or parentheses. For example, the US number
