@@ -2,8 +2,7 @@ name: Build & publish Docker image
 on:
   push:
     branches:
-      - master
-      - upstream
+      - main
   workflow_dispatch:
 
 env:
