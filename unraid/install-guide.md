@@ -16,7 +16,7 @@ cd /mnt/user/appdata/pyrobud
 
 ```bash
 # Download Docker-optimized config
-wget https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/docker/config.example.docker.toml -O cfg/config.toml
+wget https://raw.githubusercontent.com/Bluscream/pyrobud/main/docker/config.example.docker.toml -O cfg/config.toml
 
 # Or download standard example
 wget https://raw.githubusercontent.com/kdrag0n/pyrobud/master/config.example.toml -O cfg/config.toml

@@ -21,7 +21,7 @@ This guide will help you install and run Pyrobud on Unraid using Community Appli
 4. Click **Template repositories** (or scroll down to advanced view)
 5. Add this URL to your template sources:
    ```
-   https://github.com/Bluscream/pyrobud/tree/upstream/unraid
+   https://github.com/Bluscream/pyrobud/tree/main/unraid
    ```
 6. Search for "Pyrobud" in Community Applications
 7. Click **Install**

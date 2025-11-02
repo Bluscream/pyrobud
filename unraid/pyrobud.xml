@@ -12,8 +12,8 @@
   <Overview>A clean selfbot for Telegram with an emphasis on quality and practicality. Python 3.14 with latest dependencies. Originally created by kdrag0n, modernized by Bluscream.</Overview>
   <Category>Tools: Status:Stable</Category>
   <WebUI />
-  <TemplateURL>https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/unraid/pyrobud.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/assets/logo.png</Icon>
+  <TemplateURL>https://raw.githubusercontent.com/Bluscream/pyrobud/main/unraid/pyrobud.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/Bluscream/pyrobud/main/assets/logo.png</Icon>
   <ExtraParams />
   <PostArgs />
   <CPUset />

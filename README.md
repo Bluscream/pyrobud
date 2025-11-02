@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="200" height="200" src="https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/assets/logo.png">
+    <img width="200" height="200" src="https://raw.githubusercontent.com/Bluscream/pyrobud/main/assets/logo.png">
 </p>
 
 <h1 align="center">Pyrobud</h1>
@@ -137,7 +137,7 @@ First, clone this Git repository locally:
 # This modernized fork with Python 3.14
 git clone https://github.com/Bluscream/pyrobud
 cd pyrobud
-git checkout upstream
+git checkout main
 
 # Or the original by kdrag0n
 git clone https://github.com/kdrag0n/pyrobud

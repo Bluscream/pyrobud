@@ -14,7 +14,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Bluscream/pyrobud"
-documentation = "https://github.com/Bluscream/pyrobud/blob/upstream/README.md"
+documentation = "https://github.com/Bluscream/pyrobud/blob/main/README.md"
 
 # Search info
 keywords = ["chat", "telegram", "selfbot", "telegram-bot", "telethon"]
