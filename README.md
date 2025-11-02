@@ -13,6 +13,9 @@
 
 > **Credits:** Original project by [Danny Lin (@kdrag0n)](https://github.com/kdrag0n/pyrobud)  
 > This fork modernized with Python 3.14 and latest dependencies by [@Bluscream](https://github.com/Bluscream)
+>
+> **AI Disclosure:** This modernization was performed with assistance from [Cursor.AI](https://cursor.com), an AI-powered coding assistant.  
+> The AI helped with dependency updates, Docker optimization, documentation, and code refactoring while maintaining the original functionality and code quality standards.
 
 Pyrobud is a clean selfbot for Telegram with an emphasis on quality and
 practicality.
@@ -41,13 +44,13 @@ should be possible using the [iSH](https://ish.app/) app.
 Pyrobud uses the native LevelDB library for its database, so you'll need to
 install that first. Below are instructions for some common operating systems:
 
-| OS/Distro    | Command                      |
-| ------------ | ---------------------------- |
-| Arch Linux   | `pacman -S leveldb`          |
-| Ubuntu       | `apt install libleveldb-dev` |
-| macOS        | `brew install leveldb`       |
-| Termux       | `apt install leveldb`        |
-| FreeBSD      | `pkg install leveldb`        |
+| OS/Distro  | Command                      |
+| ---------- | ---------------------------- |
+| Arch Linux | `pacman -S leveldb`          |
+| Ubuntu     | `apt install libleveldb-dev` |
+| macOS      | `brew install leveldb`       |
+| Termux     | `apt install leveldb`        |
+| FreeBSD    | `pkg install leveldb`        |
 
 ### Using Docker
 
@@ -64,21 +67,24 @@ See [docker/README.md](docker/README.md) for detailed instructions.
 #### Using Published Images
 
 **From Docker Hub:**
+
 ```bash
 docker pull bluscream1/pyrobud:latest
 docker run --rm -itv "$PWD/data:/data" bluscream1/pyrobud
 ```
 
 **From GitHub Container Registry:**
+
 ```bash
 docker pull ghcr.io/bluscream/pyrobud:latest
 docker run --rm -itv "$PWD/data:/data" ghcr.io/bluscream/pyrobud
 ```
 
-Feel free to customize the data directory as you wish, as long as you create 
+Feel free to customize the data directory as you wish, as long as you create
 `config.toml` in your chosen data directory using the instructions below.
 
 The Docker images support multiple platforms:
+
 - `linux/amd64` (x86_64)
 - `linux/arm64` (ARM64/aarch64)
 
@@ -126,6 +132,7 @@ upload speeds can be as slow as kilobytes per second without it.
 ### Bleeding-edge
 
 First, clone this Git repository locally:
+
 ```bash
 # This modernized fork with Python 3.14
 git clone https://github.com/Bluscream/pyrobud
@@ -222,13 +229,15 @@ for more information.
 ## Support
 
 ### For This Fork (Python 3.14 version)
+
 - **Issues**: [Bluscream/pyrobud Issues](https://github.com/Bluscream/pyrobud/issues)
 - **Pull Requests**: [Contribute to this fork](https://github.com/Bluscream/pyrobud/pulls)
-- **Docker Images**: 
+- **Docker Images**:
   - Docker Hub: [bluscream1/pyrobud](https://hub.docker.com/r/bluscream1/pyrobud)
   - GHCR: [ghcr.io/bluscream/pyrobud](https://github.com/Bluscream/pyrobud/pkgs/container/pyrobud)
 
 ### Original Project
+
 - **Author**: [Danny Lin (@kdrag0n)](https://github.com/kdrag0n)
 - **Original Repository**: [kdrag0n/pyrobud](https://github.com/kdrag0n/pyrobud)
 - **Telegram Support**: [Official Group](https://t.me/pyrobud)

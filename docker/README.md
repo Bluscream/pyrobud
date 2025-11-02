@@ -4,6 +4,8 @@ This directory contains Docker configuration files for running Pyrobud in contai
 
 > **Credits:** Original project by [Danny Lin (@kdrag0n)](https://github.com/kdrag0n/pyrobud)  
 > Modernized with Python 3.14 and latest dependencies by [@Bluscream](https://github.com/Bluscream)
+>
+> **AI Disclosure:** Modernization performed with assistance from [Cursor.AI](https://cursor.com)
 
 ## Published Images
 

@@ -2,6 +2,9 @@
 
 This guide will help you install and run Pyrobud on Unraid using Community Applications.
 
+> **Credits:** Original project by [Danny Lin (@kdrag0n)](https://github.com/kdrag0n/pyrobud)  
+> Python 3.14 modernization by [@Bluscream](https://github.com/Bluscream) with [Cursor.AI](https://cursor.com) assistance
+
 ## Prerequisites
 
 - Unraid server (version 6.9.0 or newer recommended)

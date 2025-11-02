@@ -6,7 +6,11 @@
 name = "pyrobud"
 version = "2.1.0"
 description = "A clean selfbot for Telegram with an emphasis on quality and practicality. Modernized with Python 3.14."
-authors = ["Danny Lin <danny@kdrag0n.dev>", "Bluscream <Bluscream@users.noreply.github.com>"]
+authors = [
+    "Danny Lin <danny@kdrag0n.dev>",
+    "Bluscream <Bluscream@users.noreply.github.com>",
+    "Cursor.AI (AI Assistant)"
+]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Bluscream/pyrobud"

@@ -1,5 +1,7 @@
 # Quick Installation Guide for Unraid
 
+> **Credits:** Original by [kdrag0n](https://github.com/kdrag0n/pyrobud) | Python 3.14 modernization by [Bluscream](https://github.com/Bluscream) with [Cursor.AI](https://cursor.com)
+
 ## Step-by-Step Setup
 
 ### 1. Create Application Directory Structure
