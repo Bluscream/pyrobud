@@ -64,13 +64,13 @@ RUN apt-get update && apt-get install -y \
 # Create bot user
 RUN useradd -m -u 1000 pyrobud
 
-# Create data directory for the bot user
-RUN mkdir -p /data
-RUN chown pyrobud:pyrobud /data
+# Create data directory structure for the bot user
+RUN mkdir -p /data/cfg /data/db /data/custom_modules && \
+    chown -R pyrobud:pyrobud /data
 
-# Ensure we a volume is mounted even if the user doesn't explicitly specify it,
+# Ensure volumes are mounted even if the user doesn't explicitly specify them,
 # to prevent unintentional data loss
-VOLUME [ "/data" ]
+VOLUME [ "/data/cfg", "/data/db" ]
 
 # Copy Go programs
 COPY --from=go-build /go/bin/corrupter /usr/local/bin
@@ -81,5 +81,5 @@ COPY --from=python-build /opt/venv /opt/venv
 
 # Set runtime settings
 USER pyrobud
-WORKDIR /data
-CMD ["pyrobud"]
+WORKDIR /data/cfg
+CMD ["pyrobud", "-c", "/data/cfg/config.toml"]

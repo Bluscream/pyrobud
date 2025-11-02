@@ -1,0 +1,40 @@
+# Docker-optimized config example
+# Copy this to your cfg directory as config.toml and edit with your credentials
+
+# Config schema version. DO NOT TOUCH!
+version = 11
+
+[telegram]
+# Client API ID from https://my.telegram.org/apps
+api_id = 123456
+
+# Client API hash from https://my.telegram.org/apps
+api_hash = "0123456789abcdef0123456789abcdef"
+
+# Session name (creates session files in /data/cfg/)
+# For multiple accounts, use different session names
+session_name = "main"
+
+[bot]
+# Command prefix
+default_prefix = "."
+
+# Database path (stored in /data/db/ directory)
+db_path = "/data/db/main.db"
+
+# Error reporting (recommended for bug fixes)
+report_errors = true
+report_username = false
+sentry_dsn = ""
+
+# Response settings
+response_mode = "edit"
+overflow_mode = "truncate"
+overflow_page_limit = 4
+redact_responses = true
+
+[asyncio]
+# Use uvloop for better performance (already installed in Docker)
+disable_uvloop = false
+debug = false
+

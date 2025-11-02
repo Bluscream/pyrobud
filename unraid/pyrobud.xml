@@ -22,16 +22,52 @@
   <DonateLink>https://paypal.me/kdrag0ndonate</DonateLink>
   <Requires />
   <Config
-    Name="Data Directory"
-    Target="/data"
-    Default="/mnt/user/appdata/pyrobud"
+    Name="Config Directory"
+    Target="/data/cfg"
+    Default="/mnt/user/appdata/pyrobud/cfg"
     Mode="rw"
-    Description="Persistent data directory for config, database, and session files"
+    Description="Configuration and Telegram session files (.toml, .session)"
     Type="Path"
     Display="always"
     Required="true"
     Mask="false"
-    >/mnt/user/appdata/pyrobud</Config
+    >/mnt/user/appdata/pyrobud/cfg</Config
+  >
+  <Config
+    Name="Database Directory"
+    Target="/data/db"
+    Default="/mnt/user/appdata/pyrobud/db"
+    Mode="rw"
+    Description="LevelDB database directories (.db/)"
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false"
+    >/mnt/user/appdata/pyrobud/db</Config
+  >
+  <Config
+    Name="Custom Modules Directory"
+    Target="/opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules"
+    Default="/mnt/user/appdata/pyrobud/custom_modules"
+    Mode="ro"
+    Description="Custom Python modules directory (optional, leave empty if not used)"
+    Type="Path"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+    >/mnt/user/appdata/pyrobud/custom_modules</Config
+  >
+  <Config
+    Name="Config File"
+    Target="CONFIG_FILE"
+    Default="config.toml"
+    Mode=""
+    Description="Config filename within cfg directory (for multiple accounts)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+    >config.toml</Config
   >
   <Config
     Name="Timezone"

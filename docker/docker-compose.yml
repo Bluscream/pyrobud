@@ -9,11 +9,22 @@ services:
     container_name: pyrobud
     restart: unless-stopped
 
-    # Volume for persistent data
+    # Volume mappings for organized data structure
     volumes:
-      - pyrobud-data:/data
-      # Optionally mount config from host
-      # - ./config.toml:/data/config.toml:ro
+      # Config files and session files (.toml, .session)
+      - ${CONFIG_DIR:-./data/cfg}:/data/cfg:rw
+      # Database directories (.db/)
+      - ${DB_DIR:-./data/db}:/data/db:rw
+      # Custom modules directory
+      - ${CUSTOM_MODULES_DIR:-./data/custom_modules}:/opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules:ro
+
+      # Alternative: Single data directory (commented out)
+      # - pyrobud-data:/data
+
+    # Command override to use config from cfg directory
+    # Default config path is /data/cfg/config.toml
+    # You can override this with CONFIG_FILE environment variable
+    command: ["pyrobud", "-c", "/data/cfg/${CONFIG_FILE:-config.toml}"]
 
     # Environment variables
     environment:
@@ -21,6 +32,8 @@ services:
       - TZ=${TZ:-UTC}
       # Python unbuffered output for better logging
       - PYTHONUNBUFFERED=1
+      # Config file name (within /data/cfg/)
+      - CONFIG_FILE=${CONFIG_FILE:-config.toml}
 
     # Resource limits (optional, adjust as needed)
     deploy:
@@ -49,7 +62,11 @@ services:
     #   timeout: 10s
     #   retries: 3
     #   start_period: 40s
-
-volumes:
-  pyrobud-data:
-    driver: local
+# Optional: Named volumes (uncomment if not using host paths)
+# volumes:
+#   pyrobud-config:
+#     driver: local
+#   pyrobud-db:
+#     driver: local
+#   pyrobud-modules:
+#     driver: local

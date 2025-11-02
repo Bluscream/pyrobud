@@ -20,16 +20,29 @@ This directory contains Docker configuration files for running Pyrobud in contai
    ```bash
    DOCKER_IMAGE=pyrobud
    DOCKER_TAG=latest
+   CONFIG_DIR=./data/cfg
+   DB_DIR=./data/db
+   CUSTOM_MODULES_DIR=./data/custom_modules
    TZ=America/New_York
    ```
 
-3. **Create config directory and copy config:**
+3. **Create directory structure and config:**
 
    ```bash
-   mkdir -p ../data
-   cp ../config.example.toml ../data/config.toml
-   # Edit ../data/config.toml with your Telegram API credentials
+   # Create organized directory structure
+   mkdir -p data/{cfg,db,custom_modules}
+   
+   # Copy Docker-optimized config (recommended)
+   cp config.docker.toml data/cfg/config.toml
+   
+   # OR copy standard config
+   cp ../config.example.toml data/cfg/config.toml
+   
+   # Edit with your Telegram API credentials
+   nano data/cfg/config.toml
    ```
+   
+   **Important:** Ensure `db_path = "/data/db/main.db"` in your config!
 
 4. **Start the container:**
 
@@ -42,6 +55,29 @@ This directory contains Docker configuration files for running Pyrobud in contai
    docker-compose logs -f
    ```
    Follow the prompts to enter your phone number and verification code.
+
+## Directory Structure
+
+The new setup uses separate directories for better organization:
+
+```
+data/
+├── cfg/                      # Configuration & sessions
+│   ├── config.toml           # Main config
+│   ├── main.session          # Telegram session (auto-created)
+│   └── main.session-journal  # Session journal (auto-created)
+├── db/                       # Databases
+│   └── main.db/              # LevelDB database (auto-created)
+└── custom_modules/           # Your custom modules (optional)
+    └── example.py
+```
+
+**Benefits:**
+- ✅ Clean separation of concerns
+- ✅ Easy to backup specific components
+- ✅ Supports multiple accounts (different config files)
+- ✅ Custom modules won't affect container updates
+- ✅ Matches structure used by many users
 
 ## Manual Docker Build
 
@@ -61,6 +97,22 @@ docker build -t pyrobud:alpine -f docker/Dockerfile.alpine ..
 
 ### Running the Container
 
+**With organized directory structure (recommended):**
+
+```bash
+docker run -d \
+  --name pyrobud \
+  --restart unless-stopped \
+  -v ./data/cfg:/data/cfg:rw \
+  -v ./data/db:/data/db:rw \
+  -v ./data/custom_modules:/opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules:ro \
+  -e TZ=UTC \
+  -e PYTHONUNBUFFERED=1 \
+  pyrobud:latest
+```
+
+**Or with single data directory (legacy):**
+
 ```bash
 docker run -d \
   --name pyrobud \
@@ -68,7 +120,7 @@ docker run -d \
   -v ./data:/data \
   -e TZ=UTC \
   -e PYTHONUNBUFFERED=1 \
-  pyrobud:latest
+  pyrobud:latest pyrobud -c /data/config.toml
 ```
 
 ## Using Pre-built Images
