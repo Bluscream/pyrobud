@@ -4,7 +4,13 @@ import traceback
 from pathlib import Path
 from typing import Any, Dict, Optional, Type
 
-import plyvel
+# Try to import plyvel - handle gracefully if unavailable
+try:
+    import plyvel
+    PLYVEL_AVAILABLE = True
+except ImportError:
+    PLYVEL_AVAILABLE = False
+
 import ratelimit
 import sentry_sdk
 import telethon as tg
@@ -42,17 +48,22 @@ def _send_filter(event: Event, hint: EventHint) -> Optional[Event]:
             exc_type, exc_value = hint["exc_info"][:2]
 
             # User-initiated interrupts, network errors, and I/O errors
-            if exc_type in (
+            ignored_exceptions = [
                 KeyboardInterrupt,
                 ConnectionError,
                 IOError,
                 EOFError,
                 sqlite3.OperationalError,
-                plyvel.IOError,
                 tg.errors.FloodWaitError,
                 tg.errors.PhoneNumberInvalidError,
                 tg.errors.ApiIdInvalidError,
-            ):
+            ]
+            
+            # Add plyvel.IOError only if plyvel is available
+            if PLYVEL_AVAILABLE:
+                ignored_exceptions.append(plyvel.IOError)
+            
+            if exc_type in tuple(ignored_exceptions):
                 return None
 
             exc_msg = str(exc_value)

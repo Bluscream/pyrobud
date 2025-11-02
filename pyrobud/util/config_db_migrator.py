@@ -1,7 +1,13 @@
 import logging
 from typing import TYPE_CHECKING, List, MutableMapping, Sequence, Union
 
-import plyvel
+# Try to import plyvel - skip migration if unavailable
+try:
+    import plyvel
+    PLYVEL_AVAILABLE = True
+except ImportError:
+    plyvel = None
+    PLYVEL_AVAILABLE = False
 
 from .db import AsyncDB
 from .time import sec as now_sec
@@ -25,6 +31,11 @@ async def upgrade_v3(config: "Config") -> None:
     if "db_path" not in bot_config:
         log.info("Adding default database path 'main.db' to bot config section")
         bot_config["db_path"] = "main.db"
+
+    # Skip migration if plyvel not available (Windows in-memory mode)
+    if not PLYVEL_AVAILABLE:
+        log.warning("plyvel not available - skipping database migration")
+        return
 
     async with AsyncDB(
         plyvel.DB(config["bot"]["db_path"], create_if_missing=True)
