@@ -43,4 +43,3 @@ redact_responses = true
 # Use uvloop for better performance (already installed in Docker)
 disable_uvloop = false
 debug = false
-
