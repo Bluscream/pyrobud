@@ -35,6 +35,9 @@ services:
       - PYTHONUNBUFFERED=1
       # Config file name (within /data/cfg/)
       - CONFIG_FILE=${CONFIG_FILE:-config.toml}
+      # Optional: Enable file logging (auto-rotates at 10MB, keeps 5 backups)
+      # Alternatively, use --log-file CLI arg or [logging] section in config
+      # - PYROBUD_LOG_FILE=/data/cfg/pyrobud.log
 
     # Resource limits (optional, adjust as needed)
     deploy:

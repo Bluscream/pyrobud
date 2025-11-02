@@ -35,6 +35,11 @@ api_id = YOUR_API_ID
 api_hash = "YOUR_API_HASH"
 session_name = "main"
 
+[logging]
+# Optional: Enable persistent file logging (auto-rotates at 10MB, keeps 5 backups)
+# Can also be set via PYROBUD_LOG_FILE env var or --log-file CLI argument
+# log_file = "/data/cfg/pyrobud.log"
+
 [bot]
 default_prefix = "."
 db_path = "/data/db/main.db"  # Database in separate directory
@@ -87,6 +92,7 @@ Environment Variables:
   CONFIG_FILE: config.toml (or your custom filename like "4917658691305.toml")
   TZ: America/New_York (your timezone)
   PYTHONUNBUFFERED: 1
+  PYROBUD_LOG_FILE: /data/cfg/pyrobud.log (optional, for persistent file logging)
 ```
 
 4. Click **Apply**

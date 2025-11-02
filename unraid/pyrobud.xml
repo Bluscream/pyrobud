@@ -111,6 +111,17 @@ Features:
     >1</Config
   >
   <Config
+    Name="Log File Path"
+    Target="PYROBUD_LOG_FILE"
+    Default=""
+    Mode=""
+    Description="Optional: Enable file logging (e.g., /data/cfg/pyrobud.log). Leave empty for console-only. Logs auto-rotate at 10MB."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+  ></Config>
+  <Config
     Name="CPU Limit"
     Target=""
     Default="2.0"
