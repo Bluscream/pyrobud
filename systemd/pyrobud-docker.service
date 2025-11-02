@@ -14,10 +14,11 @@ ExecStartPre=-/usr/bin/docker container rm pyrobud
 
 # Start new container
 ExecStart=/usr/bin/docker run --name pyrobud \
-    -v "/srv/pyrobud:/data" \
+    -v "/srv/pyrobud/cfg:/data/cfg" \
+    -v "/srv/pyrobud/db:/data/db" \
     --cpus=2 \
     --memory=512m \
-    kdrag0n/pyrobud
+    bluscream1/pyrobud:latest
 
 # Clean up after stopping
 ExecStop=-/usr/bin/docker container kill pyrobud

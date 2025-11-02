@@ -124,12 +124,19 @@ The `/data` directory contains all your important data:
 
 ## Support
 
-For issues and questions:
-- GitHub Issues: https://github.com/kdrag0n/pyrobud/issues
-- Telegram Community: https://t.me/pyrobud
+### This Fork (Python 3.14 Version)
+- **GitHub Issues**: https://github.com/Bluscream/pyrobud/issues
+- **Documentation**: [Main README](../README.md)
+- **Docker Guide**: [Docker README](../docker/README.md)
+
+### Original Project
+- **Original Author**: [Danny Lin (@kdrag0n)](https://github.com/kdrag0n)
+- **Original Repository**: https://github.com/kdrag0n/pyrobud
+- **Telegram Community**: https://t.me/pyrobud
+- **Donate to Creator**: [PayPal](https://paypal.me/kdrag0ndonate)
 
 ## Additional Resources
 
-- [Main Documentation](https://github.com/kdrag0n/pyrobud/blob/master/README.md)
-- [Module Development](https://github.com/kdrag0n/pyrobud/blob/master/DEVELOPMENT.md)
-- [Contributing Guide](https://github.com/kdrag0n/pyrobud/blob/master/CONTRIBUTING.md)
+- [Module Development Handbook](../DEVELOPMENT.md)
+- [Contributing Guide](../CONTRIBUTING.md)
+- [Code Style Guide](../CODE_STYLE.md)

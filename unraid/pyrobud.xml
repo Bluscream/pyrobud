@@ -1,25 +1,42 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>pyrobud</Name>
-  <Repository>ghcr.io/bluscream/pyrobud:latest</Repository>
-  <Registry>https://ghcr.io/</Registry>
+  <Repository>bluscream1/pyrobud:latest</Repository>
+  <Registry>https://hub.docker.com/</Registry>
   <Network>bridge</Network>
   <MyIP />
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/kdrag0n/pyrobud/issues</Support>
-  <Project>https://github.com/kdrag0n/pyrobud</Project>
-  <Overview>A clean selfbot for Telegram with an emphasis on quality and practicality. Python 3.14 with latest dependencies.</Overview>
+  <Support>https://github.com/Bluscream/pyrobud/issues</Support>
+  <Project>https://github.com/Bluscream/pyrobud</Project>
+  <Overview>A clean selfbot for Telegram with an emphasis on quality and practicality. Python 3.14 with latest dependencies. Originally created by kdrag0n, modernized by Bluscream.</Overview>
   <Category>Tools: Status:Stable</Category>
   <WebUI />
   <TemplateURL>https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/unraid/pyrobud.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/kdrag0n/pyrobud/master/assets/logo.png</Icon>
+  <Icon>https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/assets/logo.png</Icon>
   <ExtraParams />
   <PostArgs />
   <CPUset />
   <DateInstalled></DateInstalled>
-  <DonateText>Support the original developer</DonateText>
+  <DonateText>Support the original creator (kdrag0n)</DonateText>
   <DonateLink>https://paypal.me/kdrag0ndonate</DonateLink>
+  <Description>
+Pyrobud - A clean Telegram selfbot
+
+Original Project: https://github.com/kdrag0n/pyrobud by Danny Lin (@kdrag0n)
+This Fork: https://github.com/Bluscream/pyrobud - Modernized with Python 3.14 and latest dependencies
+
+Docker Images:
+- Docker Hub: bluscream1/pyrobud
+- GitHub: ghcr.io/bluscream/pyrobud
+
+Features:
+- Python 3.14.0 (latest stable)
+- Debian 13 (Trixie) base
+- All dependencies updated to latest versions
+- Multi-platform support (amd64, arm64)
+- Organized directory structure for config/db/modules
+  </Description>
   <Requires />
   <Config
     Name="Config Directory"

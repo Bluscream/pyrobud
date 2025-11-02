@@ -14,7 +14,7 @@ cd /mnt/user/appdata/pyrobud
 
 ```bash
 # Download Docker-optimized config
-wget https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/docker/config.docker.toml -O cfg/config.toml
+wget https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/docker/config.example.docker.toml -O cfg/config.toml
 
 # Or download standard example
 wget https://raw.githubusercontent.com/kdrag0n/pyrobud/master/config.example.toml -O cfg/config.toml
@@ -62,7 +62,7 @@ db_path = "/data/db/main.db"  # Database in separate directory
 
 ```
 Name: pyrobud
-Repository: ghcr.io/bluscream/pyrobud:latest
+Repository: bluscream1/pyrobud:latest
 Network Type: bridge
 
 Path Mappings:
@@ -252,7 +252,13 @@ Adjust in container **Extra Parameters**:
 
 ## Support & Resources
 
-- **Issues**: https://github.com/kdrag0n/pyrobud/issues
+### This Fork (Python 3.14)
+- **Issues**: https://github.com/Bluscream/pyrobud/issues
+- **Documentation**: [Main README](../README.md)
+- **Docker Guide**: [Docker README](../docker/README.md)
+
+### Original Project
+- **Original Creator**: [Danny Lin (@kdrag0n)](https://github.com/kdrag0n)
+- **Original Repository**: https://github.com/kdrag0n/pyrobud
 - **Telegram Chat**: https://t.me/pyrobud
-- **Documentation**: https://github.com/kdrag0n/pyrobud/blob/master/README.md
-- **Module Dev**: https://github.com/kdrag0n/pyrobud/blob/master/DEVELOPMENT.md
+- **Donate to kdrag0n**: [PayPal](https://paypal.me/kdrag0ndonate)

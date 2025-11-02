@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.debian
-    image: ${DOCKER_IMAGE:-pyrobud}:${DOCKER_TAG:-latest}
+    image: ${DOCKER_IMAGE:-bluscream1/pyrobud}:${DOCKER_TAG:-latest}
     container_name: pyrobud
     restart: unless-stopped
 
@@ -56,12 +56,12 @@ services:
     # network_mode: bridge
 
     # Health check (optional)
-    # healthcheck:
-    #   test: ["CMD", "pgrep", "-f", "pyrobud"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 40s
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "pyrobud"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 # Optional: Named volumes (uncomment if not using host paths)
 # volumes:
 #   pyrobud-config:

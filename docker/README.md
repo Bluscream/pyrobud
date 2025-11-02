@@ -2,6 +2,15 @@
 
 This directory contains Docker configuration files for running Pyrobud in containers.
 
+> **Credits:** Original project by [Danny Lin (@kdrag0n)](https://github.com/kdrag0n/pyrobud)  
+> Modernized with Python 3.14 and latest dependencies by [@Bluscream](https://github.com/Bluscream)
+
+## Published Images
+
+- **Docker Hub**: [bluscream1/pyrobud](https://hub.docker.com/r/bluscream1/pyrobud)
+- **GitHub Container Registry**: [ghcr.io/bluscream/pyrobud](https://github.com/Bluscream/pyrobud/pkgs/container/pyrobud)
+- **Platforms**: `linux/amd64`, `linux/arm64`
+
 ## Available Dockerfiles
 
 - **Dockerfile.debian** (Recommended) - Debian 13 (Trixie) based image with Python 3.14
@@ -33,7 +42,7 @@ This directory contains Docker configuration files for running Pyrobud in contai
    mkdir -p data/{cfg,db,custom_modules}
    
    # Copy Docker-optimized config (recommended)
-   cp config.docker.toml data/cfg/config.toml
+   cp config.example.docker.toml data/cfg/config.toml
    
    # OR copy standard config
    cp ../config.example.toml data/cfg/config.toml
@@ -125,6 +134,18 @@ docker run -d \
 
 ## Using Pre-built Images
 
+### From Docker Hub (Recommended)
+
+```bash
+docker pull bluscream1/pyrobud:latest
+docker run -d \
+  --name pyrobud \
+  --restart unless-stopped \
+  -v ./data/cfg:/data/cfg:rw \
+  -v ./data/db:/data/db:rw \
+  bluscream1/pyrobud:latest
+```
+
 ### From GitHub Container Registry (GHCR)
 
 ```bash
@@ -132,19 +153,9 @@ docker pull ghcr.io/bluscream/pyrobud:latest
 docker run -d \
   --name pyrobud \
   --restart unless-stopped \
-  -v ./data:/data \
+  -v ./data/cfg:/data/cfg:rw \
+  -v ./data/db:/data/db:rw \
   ghcr.io/bluscream/pyrobud:latest
-```
-
-### From Docker Hub
-
-```bash
-docker pull kdrag0n/pyrobud:latest
-docker run -d \
-  --name pyrobud \
-  --restart unless-stopped \
-  -v ./data:/data \
-  kdrag0n/pyrobud:latest
 ```
 
 ## Configuration

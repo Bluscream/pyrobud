@@ -1,11 +1,19 @@
 # Build Go programs (only corrupter at the moment)
 FROM golang:1-trixie AS go-build
+
+# Suppress debconf warnings
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 RUN go install github.com/r00tman/corrupter@latest
 
 
 # Build Python package and dependencies
 FROM python:3.14-trixie AS python-build
+
+# Suppress debconf warnings
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
         git \
         libffi-dev \
@@ -45,6 +53,10 @@ RUN pip install --no-cache-dir uvloop
 
 # Package everything
 FROM python:3.14-slim-trixie AS final
+
+# Suppress debconf warnings
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install native dependencies
 RUN apt-get update && apt-get install -y \
         libffi8 \

@@ -5,12 +5,12 @@
 [tool.poetry]
 name = "pyrobud"
 version = "2.1.0"
-description = "A clean selfbot for Telegram with an emphasis on quality and practicality."
-authors = ["Danny Lin <danny@kdrag0n.dev>"]
+description = "A clean selfbot for Telegram with an emphasis on quality and practicality. Modernized with Python 3.14."
+authors = ["Danny Lin <danny@kdrag0n.dev>", "Bluscream <Bluscream@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/kdrag0n/pyrobud"
-documentation = "https://github.com/kdrag0n/pyrobud/blob/master/README.md"
+repository = "https://github.com/Bluscream/pyrobud"
+documentation = "https://github.com/Bluscream/pyrobud/blob/upstream/README.md"
 
 # Search info
 keywords = ["chat", "telegram", "selfbot", "telegram-bot", "telethon"]
@@ -27,8 +27,11 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/kdrag0n/pyrobud/issues"
+"Bug Tracker" = "https://github.com/Bluscream/pyrobud/issues"
 "Community" = "https://t.me/pyrobud"
+"Original Project" = "https://github.com/kdrag0n/pyrobud"
+"Docker Hub" = "https://hub.docker.com/r/bluscream1/pyrobud"
+"GitHub Packages" = "https://github.com/Bluscream/pyrobud/pkgs/container/pyrobud"
 
 [tool.poetry.dependencies]
 python = "^3.11"

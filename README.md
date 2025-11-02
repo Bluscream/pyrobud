@@ -1,14 +1,18 @@
 <p align="center">
-    <img width="200" height="200" src="https://raw.githubusercontent.com/kdrag0n/pyrobud/master/assets/logo.png">
+    <img width="200" height="200" src="https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/assets/logo.png">
 </p>
 
 <h1 align="center">Pyrobud</h1>
 
 <p align="center">
-    <a href="https://github.com/kdrag0n/pyrobud/releases"><img src="https://img.shields.io/github/v/tag/kdrag0n/pyrobud?sort=semver" alt="Latest tag"></a>
-    <a href="https://github.com/kdrag0n/pyrobud/actions?query=workflow%3A%22Build+%26+publish+Docker+image%22"><img src="https://img.shields.io/github/workflow/status/kdrag0n/pyrobud/Build%20%26%20publish%20Docker%20image" alt="CI status"></a>
+    <a href="https://github.com/Bluscream/pyrobud/releases"><img src="https://img.shields.io/github/v/tag/Bluscream/pyrobud?sort=semver" alt="Latest tag"></a>
+    <a href="https://github.com/Bluscream/pyrobud/actions?query=workflow%3A%22Build+%26+publish+Docker+image%22"><img src="https://img.shields.io/github/workflow/status/Bluscream/pyrobud/Build%20%26%20publish%20Docker%20image" alt="CI status"></a>
+    <a href="https://hub.docker.com/r/bluscream1/pyrobud"><img src="https://img.shields.io/docker/pulls/bluscream1/pyrobud" alt="Docker Pulls"></a>
     <a href="https://t.me/pyrobud"><img src="https://img.shields.io/badge/chat-on%20telegram-blueviolet" alt="Telegram chat"></a>
 </p>
+
+> **Credits:** Original project by [Danny Lin (@kdrag0n)](https://github.com/kdrag0n/pyrobud)  
+> This fork modernized with Python 3.14 and latest dependencies by [@Bluscream](https://github.com/Bluscream)
 
 Pyrobud is a clean selfbot for Telegram with an emphasis on quality and
 practicality.
@@ -57,14 +61,22 @@ docker-compose up -d
 
 See [docker/README.md](docker/README.md) for detailed instructions.
 
-#### Manual Docker Run
+#### Using Published Images
 
-Simply run `docker run --rm -itv "$PWD/data:/data" kdrag0n/pyrobud` to run the
-latest unstable version with the data directory set to `data` in the current
-working directory. Feel free to customize the data directory as you wish, as
-long as you create `config.toml` in your chosen data directory using the
-instructions below. The data section of the Docker command should always look
-like `-v "/path/to/data:/data"`.
+**From Docker Hub:**
+```bash
+docker pull bluscream1/pyrobud:latest
+docker run --rm -itv "$PWD/data:/data" bluscream1/pyrobud
+```
+
+**From GitHub Container Registry:**
+```bash
+docker pull ghcr.io/bluscream/pyrobud:latest
+docker run --rm -itv "$PWD/data:/data" ghcr.io/bluscream/pyrobud
+```
+
+Feel free to customize the data directory as you wish, as long as you create 
+`config.toml` in your chosen data directory using the instructions below.
 
 The Docker images support multiple platforms:
 - `linux/amd64` (x86_64)
@@ -114,7 +126,15 @@ upload speeds can be as slow as kilobytes per second without it.
 ### Bleeding-edge
 
 First, clone this Git repository locally:
-`git clone https://github.com/kdrag0n/pyrobud`
+```bash
+# This modernized fork with Python 3.14
+git clone https://github.com/Bluscream/pyrobud
+cd pyrobud
+git checkout upstream
+
+# Or the original by kdrag0n
+git clone https://github.com/kdrag0n/pyrobud
+```
 
 After that, you can run `python3 -m pip install .` to install the bot along with
 the bare minimum dependencies. However, including the `fast` extras is highly
@@ -169,7 +189,7 @@ message.
 ## Deployment
 
 For long-term server deployments, an example systemd service is available
-[here](https://github.com/kdrag0n/pyrobud/blob/master/systemd/pyrobud.service).
+[here](systemd/pyrobud.service).
 It is strongly recommended to use this service for any long-term deployments as
 it it includes parameters to improve security and restrict the system resources
 the bot can utilize to limit damage if something goes awry. The example assumes
@@ -178,7 +198,7 @@ environment located at `/home/pyrobud/venv` and a Git clone of the bot located
 at `/home/pyrobud/pyrobud`. This setup avoids tainting the system's Python install
 with unmanaged packages and allows the bot to self-update using Git.
 
-If you're using Docker to run the bot, use [pyrobud-docker.service](https://github.com/kdrag0n/pyrobud/blob/master/systemd/pyrobud-docker.service)
+If you're using Docker to run the bot, use [pyrobud-docker.service](systemd/pyrobud-docker.service)
 instead.
 
 `tmux` or `screen` should never be used to run the bot in production. A supervisor,
@@ -190,18 +210,26 @@ for a proper supervisor.
 
 ## Contributing
 
-See the [Contribution Guidelines](https://github.com/kdrag0n/pyrobud/blob/master/CONTRIBUTING.md)
+See the [Contribution Guidelines](CONTRIBUTING.md)
 for more information.
 
 ## Module Development
 
 You can easily develop custom modules! See the
-[Module Development Handbook](https://github.com/kdrag0n/pyrobud/blob/master/DEVELOPMENT.md)
+[Module Development Handbook](DEVELOPMENT.md)
 for more information.
 
 ## Support
 
-Feel free to join the [official support group](https://t.me/pyrobud) on Telegram
-for help or general discussion regarding the bot. You may also
-[open an issue on GitHub](https://github.com/pyrobud/pyrobud/issues) for bugs,
-suggestions, or anything else relevant to the project.
+### For This Fork (Python 3.14 version)
+- **Issues**: [Bluscream/pyrobud Issues](https://github.com/Bluscream/pyrobud/issues)
+- **Pull Requests**: [Contribute to this fork](https://github.com/Bluscream/pyrobud/pulls)
+- **Docker Images**: 
+  - Docker Hub: [bluscream1/pyrobud](https://hub.docker.com/r/bluscream1/pyrobud)
+  - GHCR: [ghcr.io/bluscream/pyrobud](https://github.com/Bluscream/pyrobud/pkgs/container/pyrobud)
+
+### Original Project
+- **Author**: [Danny Lin (@kdrag0n)](https://github.com/kdrag0n)
+- **Original Repository**: [kdrag0n/pyrobud](https://github.com/kdrag0n/pyrobud)
+- **Telegram Support**: [Official Group](https://t.me/pyrobud)
+- **Donate to Original Creator**: [PayPal](https://paypal.me/kdrag0ndonate) | [Liberapay](https://liberapay.com/kdrag0n)
