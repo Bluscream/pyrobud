@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional
 import logging
+from pathlib import Path
 
 # Try to import plyvel - fallback to in-memory storage if unavailable
 try:
@@ -54,8 +55,12 @@ class DatabaseProvider(MixinBase):
             # In-memory fallback
             self._db = util.db.AsyncDB(None)
         else:
+            # Ensure parent directory exists
+            db_path_obj = Path(db_path)
+            db_path_obj.parent.mkdir(parents=True, exist_ok=True)
+            
             self._db = util.db.AsyncDB(
-                plyvel.DB(db_path, create_if_missing=True, paranoid_checks=True)
+                plyvel.DB(str(db_path_obj), create_if_missing=True, paranoid_checks=True)
             )
 
     def get_db(self: "Bot", prefix: str) -> util.db.AsyncDB:
