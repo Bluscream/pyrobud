@@ -28,35 +28,28 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"[DEBUG] Parsed arguments: config_path={args.config_path}, log_file={args.log_file}")
-
     # Determine log file from CLI arg, env var, or config file
     # Priority: CLI arg > env var > config file
     log_file = args.log_file or os.getenv("PYROBUD_LOG_FILE")
-
-    print(f"[DEBUG] Log file from CLI/ENV: {log_file}")
 
     if not log_file:
         # Try to read from config file as last resort
         try:
             import tomlkit
             config_path = Path(args.config_path)
-            print(f"[DEBUG] Checking config file: {config_path}")
             if config_path.exists():
                 config_data = config_path.read_text()
                 config = tomlkit.loads(config_data)
                 log_file = config.get("logging", {}).get("log_file")
-                print(f"[DEBUG] Log file from config: {log_file}")
-        except Exception as e:
+        except Exception:
             # Silently ignore config read errors - logging will work without file
-            print(f"[DEBUG] Config read error: {e}")
             pass
 
-    print(f"[DEBUG] Final log_file value: {log_file}")
-
+    print(f"[DEBUG] Setting up logging (log_file={log_file})...")
+    
     log = logging.getLogger("launch")
     logs.setup_logging(log_file=log_file)
-
+    
     print(f"[DEBUG] Logging setup complete")
 
     log.info("Loading code...")
