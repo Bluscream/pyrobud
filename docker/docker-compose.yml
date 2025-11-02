@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  pyrobud:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.debian
+    image: ${DOCKER_IMAGE:-pyrobud}:${DOCKER_TAG:-latest}
+    container_name: pyrobud
+    restart: unless-stopped
+
+    # Volume for persistent data
+    volumes:
+      - pyrobud-data:/data
+      # Optionally mount config from host
+      # - ./config.toml:/data/config.toml:ro
+
+    # Environment variables
+    environment:
+      # Timezone
+      - TZ=${TZ:-UTC}
+      # Python unbuffered output for better logging
+      - PYTHONUNBUFFERED=1
+
+    # Resource limits (optional, adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 512M
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Network mode (default bridge is usually fine)
+    # network_mode: bridge
+
+    # Health check (optional)
+    # healthcheck:
+    #   test: ["CMD", "pgrep", "-f", "pyrobud"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+
+volumes:
+  pyrobud-data:
+    driver: local

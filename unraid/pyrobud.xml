@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>pyrobud</Name>
+  <Repository>ghcr.io/bluscream/pyrobud:latest</Repository>
+  <Registry>https://ghcr.io/</Registry>
+  <Network>bridge</Network>
+  <MyIP />
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/kdrag0n/pyrobud/issues</Support>
+  <Project>https://github.com/kdrag0n/pyrobud</Project>
+  <Overview>A clean selfbot for Telegram with an emphasis on quality and practicality. Python 3.14 with latest dependencies.</Overview>
+  <Category>Tools: Status:Stable</Category>
+  <WebUI />
+  <TemplateURL>https://raw.githubusercontent.com/Bluscream/pyrobud/upstream/unraid/pyrobud.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/kdrag0n/pyrobud/master/assets/logo.png</Icon>
+  <ExtraParams />
+  <PostArgs />
+  <CPUset />
+  <DateInstalled></DateInstalled>
+  <DonateText>Support the original developer</DonateText>
+  <DonateLink>https://paypal.me/kdrag0ndonate</DonateLink>
+  <Requires />
+  <Config
+    Name="Data Directory"
+    Target="/data"
+    Default="/mnt/user/appdata/pyrobud"
+    Mode="rw"
+    Description="Persistent data directory for config, database, and session files"
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false"
+    >/mnt/user/appdata/pyrobud</Config
+  >
+  <Config
+    Name="Timezone"
+    Target="TZ"
+    Default="America/Los_Angeles"
+    Mode=""
+    Description="Container timezone (e.g., America/New_York, Europe/London)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+    >America/Los_Angeles</Config
+  >
+  <Config
+    Name="Python Unbuffered"
+    Target="PYTHONUNBUFFERED"
+    Default="1"
+    Mode=""
+    Description="Enable unbuffered Python output for better logging"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+    >1</Config
+  >
+  <Config
+    Name="CPU Limit"
+    Target=""
+    Default="2.0"
+    Mode=""
+    Description="Maximum CPU cores (e.g., 2.0 = 2 cores)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+  />
+  <Config
+    Name="Memory Limit"
+    Target=""
+    Default="512M"
+    Mode=""
+    Description="Maximum memory usage (e.g., 512M, 1G)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"
+  />
+</Container>

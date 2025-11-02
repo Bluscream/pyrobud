@@ -47,6 +47,18 @@ install that first. Below are instructions for some common operating systems:
 
 ### Using Docker
 
+#### Quick Start with Docker Compose (Recommended)
+
+```bash
+cd docker
+cp .env.example .env
+docker-compose up -d
+```
+
+See [docker/README.md](docker/README.md) for detailed instructions.
+
+#### Manual Docker Run
+
 Simply run `docker run --rm -itv "$PWD/data:/data" kdrag0n/pyrobud` to run the
 latest unstable version with the data directory set to `data` in the current
 working directory. Feel free to customize the data directory as you wish, as
@@ -54,9 +66,11 @@ long as you create `config.toml` in your chosen data directory using the
 instructions below. The data section of the Docker command should always look
 like `-v "/path/to/data:/data"`.
 
-Note that the official Docker image only supports Linux x86_64. Other operating
-systems and architectures are not supported. However, pull requests contributing
-such support are welcome.
+The Docker images support multiple platforms:
+- `linux/amd64` (x86_64)
+- `linux/arm64` (ARM64/aarch64)
+
+For Unraid users, see [unraid/README.md](unraid/README.md) for installation instructions.
 
 ### Using pip
 
