@@ -1,30 +1,28 @@
 # Build Go programs (only corrupter at the moment)
-FROM golang:1-bookworm AS go-build
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+FROM golang:1-alpine AS go-build
+RUN apk add --no-cache git
 RUN go install github.com/r00tman/corrupter@latest
 
 
 # Build Python package and dependencies
-FROM python:3.14-bookworm AS python-build
-RUN apt-get update && apt-get install -y \
+FROM python:3.14-alpine AS python-build
+RUN apk add --no-cache \
         git \
         libffi-dev \
+        musl-dev \
         gcc \
         g++ \
-        libleveldb-dev \
-        libsnappy-dev \
+        leveldb-dev \
         make \
-        zlib1g-dev \
-        libtiff-dev \
-        libfreetype6-dev \
+        zlib-dev \
+        tiff-dev \
+        freetype-dev \
         libpng-dev \
-        libjpeg-dev \
-        liblcms2-dev \
+        libjpeg-turbo-dev \
+        lcms2-dev \
         libwebp-dev \
-        libssl-dev \
-        cargo \
-    && rm -rf /var/lib/apt/lists/*
-
+        openssl-dev \
+        cargo
 RUN mkdir -p /opt/venv
 WORKDIR /opt/venv
 RUN python3 -m venv /opt/venv
@@ -35,31 +33,35 @@ WORKDIR /src
 
 # Install bot package and dependencies
 COPY . .
-RUN pip install --upgrade pip wheel
+RUN pip install wheel
 RUN pip install .[fast]
 RUN pip install uvloop
 
 
 # Package everything
-FROM python:3.14-slim-bookworm AS final
+FROM python:3.14-alpine AS final
+# Install optional native tools (for full functionality)
+# Note: neofetch is no longer available in Alpine 3.22+
+# RUN apk add --no-cache neofetch
 # Install native dependencies
-RUN apt-get update && apt-get install -y \
-        libffi8 \
-        libleveldb1d \
-        libsnappy1v5 \
-        zlib1g \
-        libtiff6 \
-        libfreetype6 \
-        libpng16-16 \
-        libjpeg62-turbo \
-        liblcms2-2 \
-        libwebp7 \
-        libssl3 \
-        git \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+        libffi \
+        libgcc \
+        libstdc++ \
+        g++ \
+        snappy \
+        leveldb \
+        leveldb-dev \
+        zlib \
+        tiff \
+        freetype \
+        libpng \
+        libjpeg-turbo \
+        lcms2 \
+        libwebp
 
 # Create bot user
-RUN useradd -m -u 1000 pyrobud
+RUN adduser -D pyrobud
 
 # Create data directory for the bot user
 RUN mkdir -p /data
