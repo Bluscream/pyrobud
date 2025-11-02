@@ -28,7 +28,12 @@ class Bot(
     def __init__(self, config: Config):
         self.config = config
         self.log = logging.getLogger("bot")
-        self.loop = asyncio.get_event_loop()
+        # Python 3.14+: get the running loop (set by create_and_run)
+        try:
+            self.loop = asyncio.get_running_loop()
+        except RuntimeError:
+            # Fallback if called outside async context
+            self.loop = asyncio.get_event_loop_policy().get_event_loop()
         self.stopping = False
 
         # Initialize mixins
@@ -52,7 +57,8 @@ class Bot(
             return bot
         finally:
             if bot is None or (bot is not None and not bot.stopping):
-                asyncio.get_event_loop().stop()
+                # Python 3.14+: get the running loop instead of get_event_loop()
+                asyncio.get_running_loop().stop()
 
     async def stop(self) -> None:
         self.stopping = True

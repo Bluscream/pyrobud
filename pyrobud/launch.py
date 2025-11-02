@@ -47,7 +47,8 @@ async def _upgrade(config: util.config.Config, config_path: str) -> None:
     try:
         await util.config.upgrade(config, config_path)
     finally:
-        asyncio.get_event_loop().stop()
+        # Python 3.14+: get the running loop instead of get_event_loop()
+        asyncio.get_running_loop().stop()
 
 
 def main(*, config_path: str = DEFAULT_CONFIG_PATH) -> None:

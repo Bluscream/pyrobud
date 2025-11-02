@@ -87,7 +87,8 @@ async def download_file(
         percent = int((current_bytes / total_bytes) * 100)
         now = datetime.now()
         if last_update_time is None or (now - last_update_time).total_seconds() >= 5:
-            loop = asyncio.get_event_loop()
+            # Python 3.14+: use get_running_loop() to get the current event loop
+            loop = asyncio.get_running_loop()
             loop.create_task(
                 ctx.respond(f"Downloading {file_type}... {percent}% complete")
             )
