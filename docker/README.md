@@ -205,12 +205,13 @@ docker-compose down -v
 
 ## Environment Variables
 
-| Variable           | Default   | Description              |
-| ------------------ | --------- | ------------------------ |
-| `TZ`               | `UTC`     | Container timezone       |
-| `PYTHONUNBUFFERED` | `1`       | Unbuffered Python output |
-| `DOCKER_IMAGE`     | `pyrobud` | Docker image name        |
-| `DOCKER_TAG`       | `latest`  | Docker image tag         |
+| Variable           | Default       | Description                                     |
+| ------------------ | ------------- | ----------------------------------------------- |
+| `TZ`               | `UTC`         | Container timezone                              |
+| `PYTHONUNBUFFERED` | `1`           | Unbuffered Python output                        |
+| `CONFIG_FILE`      | `config.toml` | Config filename in `/data/cfg` (for multi-acct) |
+| `DOCKER_IMAGE`     | `pyrobud`     | Docker image name                               |
+| `DOCKER_TAG`       | `latest`      | Docker image tag                                |
 
 ## Volume Mounts
 

@@ -24,7 +24,8 @@ services:
     # Command override to use config from cfg directory
     # Default config path is /data/cfg/config.toml
     # You can override this with CONFIG_FILE environment variable
-    command: ["pyrobud", "-c", "/data/cfg/${CONFIG_FILE:-config.toml}"]
+    # Command will use CONFIG_FILE env var from Dockerfile (defaults to config.toml)
+    # Override by setting CONFIG_FILE environment variable below
 
     # Environment variables
     environment:

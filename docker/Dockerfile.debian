@@ -94,4 +94,7 @@ COPY --from=python-build /opt/venv /opt/venv
 # Set runtime settings
 USER pyrobud
 WORKDIR /data/cfg
-CMD ["pyrobud", "-c", "/data/cfg/config.toml"]
+
+# Use shell form to allow environment variable substitution
+ENV CONFIG_FILE=config.toml
+CMD sh -c "pyrobud -c /data/cfg/${CONFIG_FILE}"

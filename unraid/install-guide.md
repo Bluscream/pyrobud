@@ -84,7 +84,7 @@ Path Mappings:
      Access Mode: Read-Only
 
 Environment Variables:
-  CONFIG_FILE: config.toml
+  CONFIG_FILE: config.toml (or your custom filename like "4917658691305.toml")
   TZ: America/New_York (your timezone)
   PYTHONUNBUFFERED: 1
 ```
@@ -180,6 +180,7 @@ tar -czf pyrobud-backup-$(date +%Y%m%d).tar.gz \
 ```
 
 Or backup individual directories:
+
 ```bash
 # Backup just config and sessions
 tar -czf pyrobud-cfg-$(date +%Y%m%d).tar.gz \
@@ -228,6 +229,26 @@ Extra Parameters: --memory="1g"
 
 ## Advanced Configuration
 
+### Using Custom Config File Names
+
+To use a different config filename (e.g., for multiple accounts):
+
+1. Set the **CONFIG_FILE** environment variable to your filename:
+
+   ```
+   CONFIG_FILE=4917658691305.toml
+   ```
+
+2. Make sure the file exists in `/mnt/user/appdata/pyrobud/cfg/`
+
+**Example for multiple accounts:**
+
+```
+Account 1: CONFIG_FILE=main.toml
+Account 2: CONFIG_FILE=alt.toml
+Account 3: CONFIG_FILE=4917658691305.toml
+```
+
 ### Custom Modules
 
 Place custom modules in:
@@ -255,11 +276,13 @@ Adjust in container **Extra Parameters**:
 ## Support & Resources
 
 ### This Fork (Python 3.14)
+
 - **Issues**: https://github.com/Bluscream/pyrobud/issues
 - **Documentation**: [Main README](../README.md)
 - **Docker Guide**: [Docker README](../docker/README.md)
 
 ### Original Project
+
 - **Original Creator**: [Danny Lin (@kdrag0n)](https://github.com/kdrag0n)
 - **Original Repository**: https://github.com/kdrag0n/pyrobud
 - **Telegram Chat**: https://t.me/pyrobud
