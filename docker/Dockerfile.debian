@@ -49,6 +49,11 @@ RUN pip install --no-cache-dir wheel
 RUN pip install --no-cache-dir .[fast]
 RUN pip install --no-cache-dir uvloop
 
+# Debug: Verify custom_modules are installed
+RUN echo "=== Checking installed custom_modules ===" && \
+    ls -la /opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules/ || echo "custom_modules directory not found!" && \
+    python3 -c "import pyrobud.custom_modules; print('submodules:', pyrobud.custom_modules.submodules)" || echo "Failed to import custom_modules.submodules"
+
 
 # Package everything
 FROM python:3.14-slim-trixie AS final
@@ -86,12 +91,9 @@ VOLUME [ "/data/cfg", "/data/db" ]
 # Copy Go programs
 COPY --from=go-build /go/bin/corrupter /usr/local/bin
 
-# Copy Python venv
+# Copy Python venv (includes pyrobud package with built-in custom_modules)
 ENV PATH="/opt/venv/bin:$PATH"
 COPY --from=python-build /opt/venv /opt/venv
-
-# Copy built-in custom modules to the custom_modules directory
-COPY --from=python-build /opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules /opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules
 
 # Set runtime settings
 # Run as root for Tailscale and other system-level operations
