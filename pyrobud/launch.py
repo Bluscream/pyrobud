@@ -55,8 +55,27 @@ def main(*, config_path: str = DEFAULT_CONFIG_PATH) -> None:
     """Main entry point for the default bot launcher."""
 
     log.info("Loading config")
-    config_data = Path(config_path).read_text()
+    log.info(f"Config file path: {config_path}")
+    
+    config_file = Path(config_path)
+    log.info(f"Resolved absolute path: {config_file.absolute()}")
+    log.info(f"File exists: {config_file.exists()}")
+    
+    if not config_file.exists():
+        log.error(f"Config file not found: {config_path}")
+        log.error(f"Absolute path: {config_file.absolute()}")
+        log.error(f"Current working directory: {Path.cwd()}")
+        raise FileNotFoundError(
+            f"Config file not found: {config_path}\n"
+            f"Absolute path: {config_file.absolute()}\n"
+            f"Please create a config file or check the CONFIG_FILE environment variable.\n"
+            f"See config.example.toml for reference."
+        )
+    
+    log.info(f"Reading config from: {config_file.absolute()}")
+    config_data = config_file.read_text()
     config: util.config.Config = tomlkit.loads(config_data)
+    log.info(f"Config loaded successfully (version: {config.get('version', 'unknown')})")
 
     # Initialize Sentry reporting here to exempt config syntax errors and query
     # the user's report_errors value, defaulting to enabled if not specified

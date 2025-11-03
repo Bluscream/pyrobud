@@ -60,12 +60,25 @@ This guide will help you install and run Pyrobud on Unraid using Community Appli
 
 Before starting the container for the first time, you need to create a `config.toml` file:
 
-1. Navigate to `/mnt/user/appdata/pyrobud/` on your Unraid server
-2. Copy `config.example.toml` from the repository to `config.toml`
-3. Edit `config.toml` with your Telegram API credentials:
+1. Navigate to `/mnt/user/appdata/pyrobud/cfg/` on your Unraid server
+2. Download `config.example.docker.toml` from the repository's `docker/` folder or use the example below
+3. Save it as `config.toml` in the `/mnt/user/appdata/pyrobud/cfg/` directory
+4. Edit `config.toml` with your Telegram API credentials:
    - Get API ID and hash from https://my.telegram.org/apps
+   - **Important**: Use `db_path = "/data/db/main.db"` (not relative path)
    - Set your preferred command prefix
    - Configure other settings as desired
+
+### Multiple Accounts
+
+To run multiple accounts on the same Unraid server:
+
+1. Create different config files: `account1.toml`, `account2.toml`, etc.
+2. Create multiple Docker containers
+3. Set the `CONFIG_FILE` environment variable for each container:
+   - Container 1: `CONFIG_FILE = account1.toml`
+   - Container 2: `CONFIG_FILE = account2.toml`
+4. Each container will use its own config, session, and database files
 
 ## First Run
 

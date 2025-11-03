@@ -32,7 +32,9 @@ default_prefix = "."
 # Path to the LevelDB database used for storing settings and other data
 # Note that this is a *directory*, not a file
 # This will be created during startup if it doesn't already exist
-db_path = "main.db"
+# For Docker/Unraid: Use absolute path to /data/db directory
+# For local: Use relative path like "main.db"
+db_path = "main.db"  # Change to "/data/db/main.db" for Docker/Unraid
 
 # Whether to report errors to the bot creator's centralized Sentry dashboard
 # This is strongly recommended to help improve the bot's stability for everyone,
