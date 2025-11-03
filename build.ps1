@@ -90,9 +90,10 @@ function Update-Version {
     $newVersion = $parts -join '.'
     Write-Info "New version: $newVersion ($type bump)"
     
-    # Update pyproject.toml
+    # Update pyproject.toml (only the main version line, not dependency versions)
     $content = Get-Content "pyproject.toml" -Raw
-    $content = $content -replace 'version\s*=\s*"[^"]+"', "version = `"$newVersion`""
+    # Match only: version = "X.X.X" at the start of a line (after optional whitespace)
+    $content = $content -replace '(?m)^version\s*=\s*"[^"]+"', "version = `"$newVersion`""
     Set-Content "pyproject.toml" -Value $content -NoNewline
     Write-Success "Updated pyproject.toml to version $newVersion"
     
