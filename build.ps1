@@ -90,10 +90,16 @@ function Update-Version {
     $newVersion = $parts -join '.'
     Write-Info "New version: $newVersion ($type bump)"
     
-    # Update pyproject.toml (only the main version line, not dependency versions)
+    # Update pyproject.toml (only the main version line in [tool.poetry] section, not dependency versions)
     $content = Get-Content "pyproject.toml" -Raw
-    # Match only: version = "X.X.X" at the start of a line (after optional whitespace)
-    $content = $content -replace '(?m)^version\s*=\s*"[^"]+"', "version = `"$newVersion`""
+    # Replace ONLY the first occurrence of version = "X.X.X" (which is the project version)
+    # This avoids accidentally replacing dependency versions like {version = "X.X.X"}
+    $pattern = '(?m)^version\s*=\s*"[^"]+"'
+    $regex = [regex]::new($pattern)
+    $match = $regex.Match($content)
+    if ($match.Success) {
+        $content = $content.Substring(0, $match.Index) + "version = `"$newVersion`"" + $content.Substring($match.Index + $match.Length)
+    }
     Set-Content "pyproject.toml" -Value $content -NoNewline
     Write-Success "Updated pyproject.toml to version $newVersion"
     
