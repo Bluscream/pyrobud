@@ -64,10 +64,10 @@ Features:
   >
   <Config
     Name="Custom Modules Directory"
-    Target="/opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules"
+    Target="/data/custom_modules"
     Default="/mnt/user/appdata/pyrobud/custom_modules"
     Mode="ro"
-    Description="Custom Python modules directory (optional, leave empty if not used)"
+    Description="Custom Python modules directory (optional, git clone pyrobud-modules repo here)"
     Type="Path"
     Display="advanced"
     Required="false"

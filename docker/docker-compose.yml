@@ -15,8 +15,8 @@ services:
       - ${CONFIG_DIR:-./data/cfg}:/data/cfg:rw
       # Database directories (.db/)
       - ${DB_DIR:-./data/db}:/data/db:rw
-      # Custom modules directory
-      - ${CUSTOM_MODULES_DIR:-./data/custom_modules}:/opt/venv/lib/python3.14/site-packages/pyrobud/custom_modules:ro
+      # Custom modules directory (entrypoint.sh will symlink this to the installed location)
+      - ${CUSTOM_MODULES_DIR:-./data/custom_modules}:/data/custom_modules:ro
 
       # Alternative: Single data directory (commented out)
       # - pyrobud-data:/data

@@ -86,7 +86,7 @@ RUN mkdir -p /data/cfg /data/db /data/custom_modules && \
 
 # Ensure volumes are mounted even if the user doesn't explicitly specify them,
 # to prevent unintentional data loss
-VOLUME [ "/data/cfg", "/data/db" ]
+VOLUME [ "/data/cfg", "/data/db", "/data/custom_modules" ]
 
 # Copy Go programs
 COPY --from=go-build /go/bin/corrupter /usr/local/bin
@@ -94,6 +94,10 @@ COPY --from=go-build /go/bin/corrupter /usr/local/bin
 # Copy Python venv (includes pyrobud package with built-in custom_modules)
 ENV PATH="/opt/venv/bin:$PATH"
 COPY --from=python-build /opt/venv /opt/venv
+
+# Copy and set up entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set runtime settings
 # Run as root for Tailscale and other system-level operations
@@ -103,4 +107,5 @@ WORKDIR /data/cfg
 
 # Use shell form to allow environment variable substitution
 ENV CONFIG_FILE=config.toml
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["sh", "-c", "exec pyrobud -c /data/cfg/${CONFIG_FILE}"]
