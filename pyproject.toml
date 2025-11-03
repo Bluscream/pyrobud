@@ -4,7 +4,7 @@
 
 [tool.poetry]
 name = "pyrobud"
-version = "2.2.1"
+version = "2.3.0"
 description = "A clean selfbot for Telegram with an emphasis on quality and practicality. Modernized with Python 3.14."
 authors = [
     "Danny Lin <danny@kdrag0n.dev>",
@@ -46,7 +46,7 @@ colorlog = "^6.10.0"
 telethon = "^1.41.0"
 tomlkit = "^0.13.0"
 # Performance
-cryptg = {version = "^0.5.0", optional = true}
+cryptg = {version = "2.3.0", optional = true}
 # Database
 msgpack = "^1.1.0"
 plyvel = "^1.5.0"
@@ -70,7 +70,7 @@ fast = ["cryptg"]
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.9.0"
-isort = {version = "^7.0.0", extras = ["pyproject"]}
+isort = {version = "2.3.0", extras = ["pyproject"]}
 mypy = "^1.18.0"
 pre-commit = "^4.3.0"
 
