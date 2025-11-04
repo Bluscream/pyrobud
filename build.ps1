@@ -128,7 +128,8 @@ try {
             Write-Header "STEP 1: VERSION CHECK"
             $version = Get-CurrentVersion
             Write-Info "Using current version: $version (bump skipped)"
-        } else {
+        }
+        else {
             Write-Header "STEP 1: VERSION BUMP"
             $version = Update-Version -type $BumpType
         }
@@ -155,14 +156,16 @@ try {
                 
                 $commitMessage = if ($BumpType -ne "none") {
                     "chore: bump version to $version"
-                } else {
+                }
+                else {
                     "chore: rebuild version $version"
                 }
                 
                 git commit -m $commitMessage 2>&1 | Out-Host
                 $exitCode = $LASTEXITCODE
                 Write-Host "Exit code: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) { "Green" } else { "Red" })
-            } else {
+            }
+            else {
                 Write-Info "No uncommitted changes to commit"
             }
             
@@ -170,7 +173,8 @@ try {
             $tagExists = git tag -l "v$version" 2>&1
             if ($tagExists) {
                 Write-Info "Tag v$version already exists, skipping tag creation"
-            } else {
+            }
+            else {
                 git tag -a "v$version" -m "Release v$version" 2>&1 | Out-Host
                 $exitCode = $LASTEXITCODE
                 Write-Host "Exit code: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) { "Green" } else { "Red" })
@@ -224,9 +228,11 @@ try {
                 # Check both DOCKERHUB_USERNAME and DOCKER_USERNAME for compatibility
                 $dockerUsername = if ($env:DOCKERHUB_USERNAME) { 
                     $env:DOCKERHUB_USERNAME.ToLower() 
-                } elseif ($env:DOCKER_USERNAME) { 
+                }
+                elseif ($env:DOCKER_USERNAME) { 
                     $env:DOCKER_USERNAME.ToLower() 
-                } else { 
+                }
+                else { 
                     "bluscream1" 
                 }
                 Write-Info "Using token authentication for user: $dockerUsername"
@@ -321,7 +327,8 @@ try {
         if (-not $dockerStarted) {
             throw "Docker failed to start after $maxAttempts seconds. Please start Docker Desktop manually and try again."
         }
-    } else {
+    }
+    else {
         Write-Success "Docker is already running"
     }
     
