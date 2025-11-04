@@ -22,6 +22,10 @@ class Module:
         self.bot = bot
         self.log = logging.getLogger(type(self).name.lower().replace(" ", "_"))
         self.comment = None
+    
+    async def on_load(self) -> None:
+        """Called when the module is loaded. Override to add custom initialization."""
+        pass
 
     @classmethod
     def format_desc(cls, comment: Optional[str] = None):

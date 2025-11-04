@@ -56,7 +56,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-Set-Location $scriptDir
+$projectRoot = Split-Path -Parent $scriptDir
+Set-Location $projectRoot
 
 # Colors for output
 function Write-Header { param($msg) Write-Host "`n=== $msg ===" -ForegroundColor Cyan }

@@ -26,6 +26,14 @@ the [Telethon](https://github.com/LonamiWebs/Telethon) library.
 
 A working installation of **Python 3.11** or newer is required to run Pyrobud.
 
+## 📚 Documentation
+
+- **[Full Documentation](https://bluscream.github.io/pyrobud/)** - GitHub Pages site
+- **[Module Dependencies Guide](docs/dependencies.md)** - Learn about the powerful dependency management system
+- **[Quick Start](docs/quick-start.md)** - Get started quickly
+- **[Development Guide](DEVELOPMENT.md)** - Contributing and development info
+- **[Build Tools](tools/README.md)** - Docker build scripts and utilities
+
 ## Compatibility
 
 Pyrobud should be compatible with all major operating systems. While it has not

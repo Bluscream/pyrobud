@@ -2,6 +2,7 @@ from . import (
     async_helpers,
     config,
     db,
+    dependencies,
     error,
     git,
     image,
