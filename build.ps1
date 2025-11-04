@@ -400,7 +400,90 @@ try {
         throw "Docker build failed with exit code $LASTEXITCODE"
     }
     
-    # Step 4: Summary
+    # Step 4: Verify Published Images
+    if ($Publish) {
+        Write-Header "STEP 4: VERIFY PUBLISHED IMAGES"
+        
+        $verificationFailed = $false
+        
+        # Function to verify image and architecture
+        function Test-ImageArchitectures {
+            param(
+                [string]$imageName,
+                [string]$registryName
+            )
+            
+            Write-Info "Verifying $registryName ($imageName)..."
+            
+            try {
+                $manifest = docker manifest inspect $imageName 2>&1 | ConvertFrom-Json
+                
+                if ($manifest) {
+                    $architectures = $manifest.manifests | Where-Object { $_.platform.architecture -ne "unknown" } | Select-Object -ExpandProperty platform | Select-Object -ExpandProperty architecture
+                    
+                    $hasAmd64 = $architectures -contains "amd64"
+                    $hasArm64 = $architectures -contains "arm64"
+                    
+                    if ($hasAmd64 -and $hasArm64) {
+                        Write-Success "$registryName verified - Architectures: amd64, arm64"
+                        return $true
+                    }
+                    elseif ($hasAmd64) {
+                        Write-Error "$registryName - Only amd64 found, arm64 missing!"
+                        return $false
+                    }
+                    elseif ($hasArm64) {
+                        Write-Error "$registryName - Only arm64 found, amd64 missing!"
+                        return $false
+                    }
+                    else {
+                        Write-Error "$registryName - No valid architectures found!"
+                        return $false
+                    }
+                }
+                else {
+                    Write-Error "$registryName - Failed to get manifest"
+                    return $false
+                }
+            }
+            catch {
+                Write-Error "$registryName - Verification failed: $($_.Exception.Message)"
+                return $false
+            }
+        }
+        
+        # Verify Docker Hub
+        if (-not $SkipDockerHub) {
+            $dhubVersionOk = Test-ImageArchitectures "bluscream1/pyrobud:$version" "Docker Hub ($version)"
+            $dhubLatestOk = Test-ImageArchitectures "bluscream1/pyrobud:latest" "Docker Hub (latest)"
+            
+            if (-not $dhubVersionOk -or -not $dhubLatestOk) {
+                $verificationFailed = $true
+            }
+        }
+        
+        # Verify GHCR
+        if (-not $SkipGHCR) {
+            $ghcrVersionOk = Test-ImageArchitectures "ghcr.io/bluscream/pyrobud:$version" "GHCR ($version)"
+            $ghcrLatestOk = Test-ImageArchitectures "ghcr.io/bluscream/pyrobud:latest" "GHCR (latest)"
+            
+            if (-not $ghcrVersionOk -or -not $ghcrLatestOk) {
+                $verificationFailed = $true
+            }
+        }
+        
+        if ($verificationFailed) {
+            Write-Error "Image verification failed! Some images may not be available or incomplete."
+            Write-Info "Images may still be propagating. Try pulling manually to verify:"
+            Write-Info "  docker pull bluscream1/pyrobud:$version"
+            Write-Info "  docker pull ghcr.io/bluscream/pyrobud:$version"
+        }
+        else {
+            Write-Success "All published images verified successfully!"
+        }
+    }
+    
+    # Step 5: Summary
     Write-Header "BUILD COMPLETE"
     Write-Success "Version: $version"
     
