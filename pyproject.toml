@@ -75,7 +75,7 @@ regex = "^2025.10.0"
 fast = ["cryptg"]
 
 [tool.poetry.group.dev.dependencies]
-black = "^25.9.0"
+black = "^25.11.0"
 isort = {version = "^5.13.0", extras = ["pyproject"]}
 
 mypy = "^1.18.0"
