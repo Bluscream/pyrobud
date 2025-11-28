@@ -78,7 +78,7 @@ fast = ["cryptg"]
 black = "^25.9.0"
 isort = {version = "^5.13.0", extras = ["pyproject"]}
 
-mypy = "^1.18.0"
+mypy = "^1.19.0"
 pre-commit = "^4.3.0"
 
 [tool.poetry.scripts]
